@@ -2,12 +2,92 @@
 
 #tommy-search-widget {
 
-    #tommy-search-input-container {
+    padding: 6px;
+    border: 1px solid var(--light-border);
+    border-radius: 35px;
+    background: var(--light-background);
+    font-family: var(--p-font);
+    font-size: min(1em, 16px);
+    line-height: 1;
 
-        #tommy-search-input {
+    * {
+        box-sizing: border-box;
+    }
 
-            padding: 20px;
-            border-radius: 20px;
+    #tommy-search-container {
+
+        #tommy-search-bar {
+
+            position: relative;
+
+            #tommy-search-input {
+
+                width: 100%;
+                padding: 20px;
+                border-radius: 30px;
+                border: 1px solid var(--input-border);
+                outline: none;
+                font-family: var(--p-font);
+                font-size: 1em;
+                @include transition(padding .2s, border-color .2s);
+
+                &::placeholder {
+                    color: var(--input-placeholder-color);
+                    opacity: 0;
+                    @include transition(opacity .2s);
+                }
+
+                &:focus, &.not-empty {
+
+                    padding-top: 26px;
+                    padding-bottom: 14px;
+
+                    &::placeholder {
+                        opacity: 1;
+                    }
+
+                    + #tommy-search-placeholder {
+                        @include transform(translate(2px, -93%) scale(.65));
+                    }
+
+                    ~ svg {
+                        fill: var(--input-border-focus);
+                    }
+
+                }
+
+                &:focus {
+                    
+                    border-color: var(--input-border-focus);                 
+
+                }
+
+            }
+
+            #tommy-search-placeholder {
+
+                position: absolute;
+                top: 50%;
+                left: 20px;
+                font-size: 1em;
+                pointer-events: none;
+                transform-origin: 0 0;
+                @include transition(transform .2s, font-size .2s);
+                @include transform(translateY(-50%));
+
+            }
+
+            svg {
+                position: absolute;
+                top: calc(20px + .7em);
+                right: 20px;
+                width: 20px;
+                height: 20px;
+                pointer-events: none;
+                fill: var(--input-border);
+                @include transform(translateY(-50%));
+                @include transition(fill .2s);
+            }
 
         }
 

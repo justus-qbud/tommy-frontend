@@ -16,13 +16,13 @@ class SearchInput {
     };
     
     this.debounceTimer = null;
-    this.elements = {}; // Cache DOM elements
+    this.element = null // Cache DOM elements
     this.init();
   }
 
   init() {
     this.render();
-    this.cacheElements();
+      this.element = this.container.querySelector('#tommy-search-input');
     this.bindEvents();
   }
 
@@ -35,6 +35,8 @@ class SearchInput {
           value="${this.state.query}"
           id="tommy-search-input"
         />
+        <span id="tommy-search-placeholder">Zoekopdracht</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
       </div>
     `;
   }
@@ -44,21 +46,12 @@ class SearchInput {
   }
 
   cacheElements() {
-    this.elements = {
-      input: this.container.querySelector('#tommy-search-input'),
-    };
-  }
-
-  updateUI() {
-    // Update input value only if it differs (prevents cursor jumping)
-    if (this.elements.input.value !== this.state.query) {
-      this.elements.input.value = this.state.query;
-    }
+    this.element = this.container.querySelector('#tommy-search-input');
   }
 
   bindEvents() {
     // Input event with debouncing
-    this.elements.input.addEventListener('input', (e) => {
+    this.element.addEventListener('input', (e) => {
       this.handleInput(e.target.value);
     });
   }
@@ -75,17 +68,16 @@ class SearchInput {
     // Notify about query change immediately
     this.options.onQueryChange(trimmedValue);
 
-    // Update UI without full re-render
-    this.updateUI();
-
-    if (trimmedValue.length >= this.options.minQueryLength) {
-      // Debounce the search
-      this.debounceTimer = setTimeout(() => {
-        this.triggerSearch();
-      }, this.options.debounceDelay);
-    } else if (trimmedValue.length === 0) {
-      // Clear results immediately when input is empty
+    if (trimmedValue.length > 0) {
+      if (trimmedValue.length >= this.options.minQueryLength) {
+        this.debounceTimer = setTimeout(() => {
+          this.triggerSearch();
+        }, this.options.debounceDelay);
+      }
+      this.element.classList.add("not-empty");
+    } else {
       this.options.onClear();
+      this.element.classList.remove("not-empty");
     }
   }
 
@@ -112,7 +104,7 @@ class SearchInput {
   }
 
   focus() {
-    this.elements.input?.focus();
+    this.element?.focus();
   }
 
   destroy() {
