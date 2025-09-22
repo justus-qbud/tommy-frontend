@@ -5,8 +5,8 @@ export class SearchResults {
     this.results = [];
     this.tags = {
       dates: false,
-      ageCategories: false,
-      accommodationGroups: false,
+      age_categories: false,
+      accommodation_groups: false,
     }
     this.loading = false;
   }
@@ -24,18 +24,18 @@ export class SearchResults {
         let message;
         if (!this.tags.dates) {
           message = "Voer je gewenste <span>verblijfsdata</span> in.";
-        } else if (!this.tags.accommodationGroups) {
+        } else if (!this.tags.accommodation_groups) {
           message = "Voeg toe: wil je <span>kamperen of huren</span>?";
-        } else if (!this.tags.ageCategories) {
+        } else if (!this.tags.age_categories) {
           message = "Wat is de <span>samenstelling van je reisgezelschap</span>?"
         } else {
           message = "Geen resultaten.";
         }
-        return `<p id="tommy-results-none">${message}</p>`;
+        return `<p id="tommy-results-none" class="hide">${message}</p>`;
       }
       const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
       return `
-        <div id="tommy-results-list">
+        <div id="tommy-results-list" class="hide">
           ${resultsList}
         </div>
       `
@@ -70,6 +70,10 @@ export class SearchResults {
 
   render() {
     this.container.innerHTML = this.templates.container();
+    setTimeout(() => {
+      let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
+      newResultsList.classList.remove("hide");
+    }, 100);
   }
 
   updateResults(newResults, newParse) {
@@ -87,7 +91,14 @@ export class SearchResults {
     this.results = newResults;
     const resultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
     if (resultsList) {
-      resultsList.outerHTML = this.templates.resultsList();
+      resultsList.classList.add("hide");
+      setTimeout(() => {
+        resultsList.outerHTML = this.templates.resultsList();
+        setTimeout(() => {
+          let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
+          newResultsList.classList.remove("hide");
+        }, 100);
+      }, 250);
     }
 
     this.loading = false;

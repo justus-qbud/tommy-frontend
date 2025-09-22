@@ -2,7 +2,7 @@ class SearchInput {
   constructor(container, options = {}) {
     this.container = container;
     this.options = {
-      placeholder: options.placeholder || 'Search...',
+      placeholder: options.placeholder || 'Zoeken...',
       minQueryLength: options.minQueryLength || 3,
       debounceDelay: options.debounceDelay || 300,
       onSearch: options.onSearch || (() => {}),
