@@ -9,9 +9,12 @@
     font-family: var(--p-font);
     font-size: min(1em, 16px);
     line-height: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 
     * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     #tommy-search-container {
@@ -19,6 +22,31 @@
         #tommy-search-bar {
 
             position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+
+            &:after {
+                content: '';
+                position: absolute;
+                top: -50px;
+                left: -70%;
+                bottom: -50px;
+                width: 200%;
+                border-radius: 30px;
+                background: linear-gradient(
+                    100deg,
+                    rgba(0, 0, 0, 0.0) 15%,
+                    rgba(0, 0, 0, 0.1) 22.5%,
+                    rgba(0, 0, 0, 0.0) 27.5%,
+                    rgba(0, 0, 0, 0.1) 32.5%,
+                    rgba(0, 0, 0, 0.0) 40%,
+                );
+                z-index: 99;
+                pointer-events: none;
+                opacity: 0;
+                animation: loading 2s infinite;
+                @include transition(opacity .5s);
+            }
 
             #tommy-search-input {
 
@@ -87,6 +115,83 @@
                 fill: var(--input-border);
                 @include transform(translateY(-50%));
                 @include transition(fill .2s);
+            }
+
+        }
+
+        &.loading {
+
+            #tommy-search-bar {
+                
+                &:after {
+                    opacity: .3;
+                }
+
+                @include keyframes(loading) {
+                    0% {
+                        @include transform(translateX(0));
+                    }
+                    100% {
+                        @include transform(translateX(100%));
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+    #tommy-results-container {
+
+        max-height: 0;
+        overflow: hidden;
+        @include transition(max-height .15s, padding .25s);
+
+        &.show {
+            max-height: 1000px;
+            padding-top: 5px;
+            @include transition(max-height 1s, padding .25s);
+        }
+
+        #tommy-results {
+
+            #tommy-results-tags {
+
+                display: flex;
+                margin-bottom: 14px;
+
+                span {
+                    
+                    display: flex;
+                    align-items: center;
+                    padding: 9px 12px;
+                    margin-right: 3px;
+                    line-height: 12px;
+                    font-size: .65em;
+                    font-weight: 900;
+                    color: var(--error-color);
+                    border-radius: 20px;
+                    background-color: var(--error-background);
+
+                    svg {
+                        height: 12px;
+                        width: 12px;
+                        margin: 0 5px 0 -2px;
+                        fill: var(--error-color);
+                    }
+
+                }
+
+            }
+
+            #tommy-results-none {
+
+                text-align: center;
+                margin: 10px 0;
+                font-size: .8em;
+                color: var(--muted-color);
+
             }
 
         }

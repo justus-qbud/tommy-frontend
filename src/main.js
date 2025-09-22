@@ -23,22 +23,23 @@ class SearchWidget {
   }
 
   initializeComponents() {
+
+    // Initialize results component
+    const resultsContainer = this.element.querySelector('#tommy-results-container');
+    this.resultsComponent = new SearchResults(resultsContainer);
+    this.resultsComponent.render();
+
     // Initialize search input component
     const searchContainer = this.element.querySelector('#tommy-search-container');
     this.searchInput = new SearchInput(searchContainer, {
       placeholder: this.options.placeholder || 'Search...',
       minQueryLength: this.options.minQueryLength || 3,
       debounceDelay: 300,
-      onSearch: (query) => this.handleSearch(query),
+      onSearch: async (query) => await this.handleSearch(query),
       onClear: () => this.handleClearSearch(),
+      onFocus: () => this.resultsComponent.show(),
+      onBlur: () => this.resultsComponent.hide(),
     });
-
-    // Initialize results component
-    const resultsContainer = this.element.querySelector('#tommy-results-container');
-    this.resultsComponent = new SearchResults(resultsContainer, {
-      onResultClick: (id) => this.handleResultClick(id)
-    });
-    this.resultsComponent.render();
   }
 
   template() {
@@ -52,19 +53,18 @@ class SearchWidget {
 
   render() {
     this.element.innerHTML = this.template();
-    document.getElementById("app").innerHTML = this.element.innerHTML;
+    document.getElementById("tommy-widget-container").innerHTML = this.element.innerHTML;
   }
 
   async handleSearch(query) {
     this.resultsComponent.setLoading(true);
-    this.searchInput.setLoading(true);
+    // Remove this line: this.searchInput.setLoading(true);
     
     try {
       const results = await this.searchService.search(query);
       
-      // Handle cancelled requests
       if (results === null) {
-        return; // Request was cancelled, don't update UI
+        return;
       }
       
       this.state.results = results;
@@ -74,14 +74,12 @@ class SearchWidget {
       console.error('Search failed:', error);
       this.resultsComponent.updateResults([]);
       
-      // Optionally show error state
       if (this.options.onSearchError) {
         this.options.onSearchError(error);
       }
     } finally {
-      // Always clear loading states
       this.resultsComponent.setLoading(false);
-      this.searchInput.setLoading(false);
+      // Remove this line: this.searchInput.setLoading(false);
     }
   }
 
@@ -130,20 +128,13 @@ class SearchWidget {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const appElement = document.getElementById("app");
-  const searchWidget = new SearchWidget(appElement, {
+  const widgetContainerElement = document.getElementById("tommy-widget-container");
+  new SearchWidget(widgetContainerElement, {
     placeholder: "Search...",
     minQueryLength: 3,
     searchConfig: {
       apiUrl: "localhost:5000/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
       timeout: 5000
     },
-    onResultSelect: (resultId, results) => {
-      console.log('Selected result:', resultId, results);
-    },
-    onSearchError: (error) => {
-      console.error('Search error:', error);
-    
-    }
   });
 });

@@ -7,12 +7,13 @@ class SearchInput {
       debounceDelay: options.debounceDelay || 300,
       onSearch: options.onSearch || (() => {}),
       onClear: options.onClear || (() => {}),
-      onQueryChange: options.onQueryChange || (() => {})
+      onQueryChange: options.onQueryChange || (() => {}),
+      onFocus: options.onFocus || (() => {}),
+      onBlur: options.onBlur || (() => {}),
     };
     
     this.state = {
       query: '',
-      isLoading: false
     };
     
     this.debounceTimer = null;
@@ -22,7 +23,7 @@ class SearchInput {
 
   init() {
     this.render();
-      this.element = this.container.querySelector('#tommy-search-input');
+    this.element = this.container.querySelector('#tommy-search-input');
     this.bindEvents();
   }
 
@@ -34,8 +35,9 @@ class SearchInput {
           placeholder="${this.options.placeholder}"
           value="${this.state.query}"
           id="tommy-search-input"
+          maxlength="100"
         />
-        <span id="tommy-search-placeholder">Zoekopdracht</span>
+        <span id="tommy-search-placeholder">Accommodatie zoeken</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9.145 18.29c-5.042 0-9.145-4.102-9.145-9.145s4.103-9.145 9.145-9.145 9.145 4.103 9.145 9.145-4.102 9.145-9.145 9.145zm0-15.167c-3.321 0-6.022 2.702-6.022 6.022s2.702 6.022 6.022 6.022 6.023-2.702 6.023-6.022-2.702-6.022-6.023-6.022zm9.263 12.443c-.817 1.176-1.852 2.188-3.046 2.981l5.452 5.453 3.014-3.013-5.42-5.421z"/></svg>
       </div>
     `;
@@ -53,6 +55,17 @@ class SearchInput {
     // Input event with debouncing
     this.element.addEventListener('input', (e) => {
       this.handleInput(e.target.value);
+    });
+    
+    // Focus and blur events
+    this.element.addEventListener('focus', () => {
+      this.options.onFocus();
+    });
+    
+    this.element.addEventListener('blur', () => {
+      setTimeout(() => {
+        this.options.onBlur();
+      }, 150);
     });
   }
 
@@ -81,17 +94,24 @@ class SearchInput {
     }
   }
 
-  triggerSearch() {
+  async triggerSearch() {
     const query = this.state.query.trim();
     if (query.length >= this.options.minQueryLength) {
       this.setLoading(true);
-      this.options.onSearch(query);
+      try {
+        await this.options.onSearch(query);
+      } finally {
+        this.setLoading(false);
+      }
     }
   }
 
   setLoading(isLoading) {
-    this.state.isLoading = isLoading;
-    this.updateUI();
+    if (isLoading) {
+      this.container.classList.add("loading");
+    } else {
+      this.container.classList.remove("loading");
+    }
   }
 
   getQuery() {
@@ -100,7 +120,6 @@ class SearchInput {
 
   setQuery(query) {
     this.state.query = query;
-    this.updateUI();
   }
 
   focus() {
