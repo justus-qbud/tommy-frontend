@@ -35,18 +35,25 @@ export class SearchResults {
       }
       const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
       return `
-        <div id="tommy-results-list" class="hide">
+        <ul id="tommy-results-list" class="hide">
           ${resultsList}
-        </div>
+        </ul>
       `
     },
     
     resultItem: (result) => `
-      <div class="result-item" data-id="${result.id}">
-        <h3>${result.title}</h3>
-        <p>${result.description}</p>
-        <small>${result.url}</small>
-      </div>
+      <li>
+        <a class="result-item" data-id="${result.id}" href="${result.url}">
+          <img src="${result.image_url}">
+          <div classname="result-text">
+            <h3>${result.name}</h3>
+            <div class="result-item-date-and-price">
+              <span>${result["date-from"]} - ${result["date-till"]}</span>
+              <span>${result.totalPrice}</span>
+            </div>
+          </div>
+        </a>
+      </li>
     `,
 
     resultsTags: () => `
@@ -88,7 +95,21 @@ export class SearchResults {
       this.tags[key] = Object.keys(newParse).includes(key);
     }
 
-    this.results = newResults;
+    const results = [], alternatives = [];
+    for (const result of newResults) {
+      if (!result.periods) continue;
+      for (const period of result.periods) {
+        const {periods, ...resultWithoutPeriods} = result;
+        console.log(period["date-from"] === newParse.dates.start && period["date-till"] === newParse.dates.end);
+        if (period["date-from"] === newParse.dates.start && period["date-till"] === newParse.dates.end) {
+          results.push({...resultWithoutPeriods, ...period});
+        } else {
+          alternatives.push({...resultWithoutPeriods, ...period, alternative: true});
+        }
+      }
+    }
+    this.results = [...results, ...alternatives];
+
     const resultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
     if (resultsList) {
       resultsList.classList.add("hide");

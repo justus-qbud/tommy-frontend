@@ -146,10 +146,11 @@
 
         max-height: 0;
         overflow: hidden;
+        border-radius: 0 0 30px 30px;
         @include transition(max-height .15s, padding .25s);
 
         &.show {
-            max-height: 1000px;
+            max-height: 600px;
             padding-top: 5px;
             @include transition(max-height 1s, padding .25s);
         }
@@ -220,10 +221,50 @@
 
             #tommy-results-list {
 
+                max-height: 500px;
+                overflow-y: auto;
                 @include transition(opacity .2s);
 
                 &.hide {
                     opacity: 0;
+                }
+
+                li {
+
+                    margin-bottom: 10px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    a {
+
+                        text-decoration: none;
+                        display: flex;
+                        gap: 8px;
+                        color: var(--p-color);
+
+                        img {
+
+                            width: 30%;
+                            max-height: 220px;
+                            border-radius: 20px;
+
+                        }
+
+                        div {
+
+                            display: flex;
+                            flex-direction: column;
+
+                            h3 {
+                                font-family: var(--header-font);
+                            }
+
+                        }
+
+                    }
+
                 }
 
             }
