@@ -48,7 +48,8 @@
 
     // background
     --light-background: #F3F3F3;
-    --error-background: #ffcccc;
+    --error-background: #FFCCCC;
+    --correct-background: #72F386;
 
     // borders
     --light-border: #CCCCCC;
@@ -60,10 +61,11 @@
     --p-font: 'Nunito', sans-serif;
 
     // font-colors
-    --input-color: #585858;;
+    --input-color: #585858;
     --input-placeholder-color: #C3C3C3;
     --input-placeholder-color-focus: #585858;
     --muted-color: #b3b3b3;
-    --error-color: #DB6868
+    --error-color: #DB6868;
+    --correct-color: #3E974B;
 
 }

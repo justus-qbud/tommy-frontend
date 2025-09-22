@@ -19,9 +19,9 @@ class SearchService {
     this.activeController = new AbortController();
 
     try {
-      const results = await this.searchAPI(query, this.activeController.signal);
-      this.activeController = null; // Clear after successful completion
-      return results;
+      const [results, parse] = await this.searchAPI(query, this.activeController.signal);
+      this.activeController = null;
+      return [results, parse];
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Search request was cancelled');
@@ -35,19 +35,28 @@ class SearchService {
 
   async searchAPI(query, signal) {
     
-    return new Promise((resolve, reject) => {
-      const timeoutId = setTimeout(() => {
-        resolve([
-          { id: 1, title: `Result for "${query}" 1`, description: 'Description 1' },
-          { id: 2, title: `Result for "${query}" 2`, description: 'Description 2' },
-          { id: 3, title: `Result for "${query}" 3`, description: 'Description 3' }
-        ]);
-      }, 500);
+    const params = new URLSearchParams();
+    params.append("q", query);
 
-      // Handle cancellation
+    return new Promise((resolve, reject) => {
+      fetch(
+        "http://localhost:5000/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?" + params.toString(),
+        {
+          method: "get",
+          mode: "cors",
+          headers: {
+            Accept: "application/json",
+          },
+          signal: this.activeController.signal
+        }
+      ).then((response) => {
+        return response.json()
+      }).then((responseJson) => {
+        resolve([responseJson.data.results, responseJson.data.parse]);
+      })
+
       signal?.addEventListener('abort', () => {
-        clearTimeout(timeoutId);
-        reject(new Error('AbortError'));
+        reject("New request");
       });
     });
   }

@@ -34,7 +34,7 @@ class SearchWidget {
     this.searchInput = new SearchInput(searchContainer, {
       placeholder: this.options.placeholder || 'Search...',
       minQueryLength: this.options.minQueryLength || 3,
-      debounceDelay: 300,
+      debounceDelay: 500,
       onSearch: async (query) => await this.handleSearch(query),
       onClear: () => this.handleClearSearch(),
       onFocus: () => this.resultsComponent.show(),
@@ -57,18 +57,18 @@ class SearchWidget {
   }
 
   async handleSearch(query) {
-    this.resultsComponent.setLoading(true);
     // Remove this line: this.searchInput.setLoading(true);
     
+    if (!query) {
+      this.resultsComponent.updateResults([]);
+      return;
+    }
+
     try {
-      const results = await this.searchService.search(query);
+      const [results, parse] = await this.searchService.search(query);
       
-      if (results === null) {
-        return;
-      }
-      
-      this.state.results = results;
-      this.resultsComponent.updateResults(results);
+      this.state.results = results || [];
+      this.resultsComponent.updateResults(results, parse);
       
     } catch (error) {
       console.error('Search failed:', error);
@@ -78,7 +78,6 @@ class SearchWidget {
         this.options.onSearchError(error);
       }
     } finally {
-      this.resultsComponent.setLoading(false);
       // Remove this line: this.searchInput.setLoading(false);
     }
   }

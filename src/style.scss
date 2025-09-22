@@ -173,12 +173,25 @@
                     color: var(--error-color);
                     border-radius: 20px;
                     background-color: var(--error-background);
+                    @include transition(color .2s, background-color .2s);
 
                     svg {
                         height: 12px;
                         width: 12px;
                         margin: 0 5px 0 -2px;
                         fill: var(--error-color);
+                        @include transition(fill .2s);
+                    }
+
+                    &.active {
+                        
+                        background-color: var(--correct-background);
+                        color: var(--correct-color);
+
+                        svg {
+                            fill: var(--correct-color);
+                        }
+
                     }
 
                 }
@@ -188,9 +201,15 @@
             #tommy-results-none {
 
                 text-align: center;
-                margin: 10px 0;
-                font-size: .8em;
+                margin: 35px 0;
+                padding: 0 15px;
+                font-size: 1.6em;
                 color: var(--muted-color);
+                line-height: 1.3;
+
+                span {
+                    color: rgba(36, 59, 104, .5);
+                }
 
             }
 
