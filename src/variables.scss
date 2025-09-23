@@ -47,12 +47,15 @@
 :root {
 
     // background
-    --light-background: #F3F3F3;
+    --medium-background: #eeeeee;
+    --light-background: #F5F5F5;
+    --lighter-background: #f8f8f8;
     --error-background: #FFCCCC;
     --correct-background: #72F386;
 
     // borders
     --light-border: #CCCCCC;
+    --lighter-border: #DDDDDD;
     --input-border: #D5D5D5;
     --input-border-focus: #C4C4C4;
 

@@ -9,12 +9,16 @@ export class SearchResults {
       accommodation_groups: false,
     }
     this.loading = false;
+    this.vertical = true;
   }
 
   templates = {
     container: () => `
       <div id="tommy-results">
-        ${this.templates.resultsTags()}
+        <div id="tommy-results-tags-buttons">
+          ${this.templates.resultsTags()}
+          ${this.templates.resultsButtons()}
+        </div>
         ${this.templates.resultsList()}
       </div>
     `,
@@ -35,7 +39,7 @@ export class SearchResults {
       }
       const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
       return `
-        <ul id="tommy-results-list" class="hide">
+        <ul id="tommy-results-list" class="hide scroll ${!this.vertical ? 'class="horizontal"' : ''}">
           ${resultsList}
         </ul>
       `
@@ -43,13 +47,15 @@ export class SearchResults {
     
     resultItem: (result) => `
       <li>
-        <a class="result-item" data-id="${result.id}" href="${result.url}">
+        <a class="result-item" data-id="${result.id}" href="${result.url}" target="_blank">
           <img src="${result.image_url}">
           <div classname="result-text">
             <h3>${result.name}</h3>
-            <div class="result-item-date-and-price">
-              <span>${result["date-from"]} - ${result["date-till"]}</span>
-              <span>${result.totalPrice}</span>
+            <div class="result-item-date-price">
+              <span class="result-item-date">${result["date-from"]} - ${result["date-till"]}</span>
+              <span class="result-item-price">
+                ${result.price.total ? `&euro;${Math.round(result.price.total)},-` : "Geen prijs"}
+              </span>
             </div>
           </div>
         </a>
@@ -71,6 +77,23 @@ export class SearchResults {
           Accommodatietype
         </span>
       </div>
+    `,
+
+    resultsButtons: () => `
+      <div id="tommy-results-buttons">
+        <div id="tommy-results-sort">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
+          <ul>
+            <li>Standaard</li>
+            <li>Prijs oplopend</li>
+            <li>Prijs aflopend</li>
+          </ul>
+        </div>
+        <div id="tommy-results-view" ${!this.vertical ? 'class="horizontal"' : ''}>
+          <svg id="tommy-results-view-ver" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.5 7.583v8.334l.216-.221c.147-.149.341-.223.534-.223.528 0 .75.459.75.75 0 .19-.071.38-.216.526l-1.496 1.528c-.14.142-.332.223-.531.223-.2 0-.392-.079-.533-.22l-1.528-1.527c-.146-.147-.219-.339-.219-.531 0-.495.435-.782.82-.746.168.015.331.087.46.216l.243.243v-8.37l-.243.243c-.129.129-.292.201-.46.216-.385.036-.82-.251-.82-.746 0-.192.073-.384.219-.531l1.528-1.527c.141-.141.333-.22.533-.22.199 0 .391.081.531.223l1.496 1.528c.145.146.216.336.216.526 0 .291-.222.75-.75.75-.193 0-.387-.074-.534-.223zm-4.5 10.167c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75z"/></svg>
+          <svg id="tommy-results-view-hor" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m2 17.75c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm5.526-8.828s.501.505 2.254 2.259c.147.147.22.339.22.53 0 .192-.073.384-.22.531-1.752 1.753-2.254 2.258-2.254 2.258-.145.145-.335.217-.526.217-.192-.001-.384-.074-.53-.221-.293-.293-.295-.766-.004-1.057l.977-.978h-4.693c-.414 0-.75-.336-.75-.75 0-.413.336-.75.75-.75h4.693l-.978-.978c-.289-.289-.287-.762.006-1.055.147-.146.339-.22.53-.221s.38.071.525.215zm3.474 4.828c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm0-4c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-4c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75z"/></svg>
+        </div>
+      </div>
     `
 
   };
@@ -81,6 +104,7 @@ export class SearchResults {
       let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
       newResultsList.classList.remove("hide");
     }, 100);
+    this.bindEvents();
   }
 
   updateResults(newResults, newParse) {
@@ -100,7 +124,6 @@ export class SearchResults {
       if (!result.periods) continue;
       for (const period of result.periods) {
         const {periods, ...resultWithoutPeriods} = result;
-        console.log(period["date-from"] === newParse.dates.start && period["date-till"] === newParse.dates.end);
         if (period["date-from"] === newParse.dates.start && period["date-till"] === newParse.dates.end) {
           results.push({...resultWithoutPeriods, ...period});
         } else {
@@ -131,6 +154,22 @@ export class SearchResults {
 
   hide() {
     // this.container.classList.remove("show");
+  }
+
+  bindEvents() {
+
+    document.getElementById("tommy-results-view-hor").addEventListener("click", () => {
+      this.vertical = false;
+      document.getElementById("tommy-results-list")?.classList.add("horizontal");
+      document.getElementById("tommy-results-view").classList.add("horizontal");
+    });
+
+    document.getElementById("tommy-results-view-ver").addEventListener("click", () => {
+      this.vertical = true;
+      document.getElementById("tommy-results-list")?.classList.remove("horizontal");
+      document.getElementById("tommy-results-view").classList.remove("horizontal");
+    });
+
   }
 
 }
