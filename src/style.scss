@@ -46,7 +46,7 @@
                 z-index: 99;
                 pointer-events: none;
                 opacity: 0;
-                animation: loading 2s infinite;
+                animation: loading 3s infinite;
                 @include transition(opacity .5s);
             }
 
@@ -81,7 +81,7 @@
                     }
 
                     ~ svg {
-                        fill: var(--input-border-focus);
+                        fill: var(--input-border-focus) !important;
                     }
 
                 }
@@ -116,8 +116,36 @@
                 pointer-events: none;
                 fill: var(--input-border);
                 @include transform(translateY(-50%));
-                @include transition(fill .2s);
+                @include transition(fill .2s, opacity .2s ease .15s);
             }
+
+            .loader {
+
+                position: absolute;
+                top: calc(20px + .7em);
+                right: 20px;
+                width: 20px;
+                height: 20px;
+                border: 3px solid var(--input-border);
+                border-bottom-color: transparent;
+                border-radius: 50%;
+                display: inline-block;
+                box-sizing: border-box;
+                animation: rotation .7s linear infinite;
+                opacity: 0;
+                @include transform(translateY(-50%));
+                @include transition(opacity .2s);
+
+            }
+
+            @keyframes rotation {
+                0% {
+                    @include transform(translateY(-50%) rotate(0deg));
+                }
+                100% {
+                    @include transform(translateY(-50%) rotate(360deg));
+                }
+            } 
 
         }
 
@@ -136,6 +164,16 @@
                     100% {
                         @include transform(translateX(100%));
                     }
+                }
+
+                svg {
+                    opacity: 0;
+                    @include transition(opacity .2s);
+                }
+
+                .loader {
+                    opacity: 1;
+                    @include transition(fill .2s, opacity .2s ease .15s);
                 }
 
             }
@@ -220,7 +258,6 @@
                         border-radius: 10px;
                         height: 100%;
                         border: 1px solid var(--light-border);
-                        overflow: hidden;
 
                         > svg {
                             
@@ -229,8 +266,9 @@
                             box-sizing: content-box;
                             padding: 0 6px;
                             fill: var(--muted-color);
+                            border-radius: 10px;
                             cursor: pointer;
-                            @include transition(background-color .2s);
+                            @include transition(background-color .2s, fill .2s);
 
                             &:hover {
                                 background-color: var(--medium-background);
@@ -242,21 +280,23 @@
                             
                             position: absolute;
                             right: 0;
-                            top: 100%;
+                            top: calc(100% + 4px);
                             padding: 8px 0;
-                            width: 200px;
+                            width: 180px;
                             border-radius: 15px;
                             border: 1px solid var(--light-border);
                             background: white;
-                            font-size: .9em;
+                            font-size: .85em;
                             box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.04);
                             overflow: hidden;
-                            pointer-events: hidden;
+                            pointer-events: none;
                             opacity: 0;
+                            @include transform(translateY(-8px));
+                            @include transition(opacity .2s, transform .15s);
 
                             li {
                                 
-                                padding: 8px 12px;
+                                padding: 6px 12px;
                                 cursor: pointer;
                                 @include transition(background-color .2s);
 
@@ -264,6 +304,20 @@
                                     background: var(--lighter-background);
                                 }
 
+                            }
+
+                        }
+
+                        &.show {
+
+                            > svg {
+                                fill: var(--input-placeholder-color-focus);
+                            }
+
+                            ul {
+                                pointer-events: all;
+                                opacity: 1;
+                                @include transform(translateY(0));
                             }
 
                         }
@@ -374,9 +428,11 @@
                     opacity: 0;
                 }
 
-                li {
+                > li {
 
                     margin-bottom: 10px;
+                    line-height: 1.3;
+                    width: 100%;
 
                     &:last-child {
                         margin-bottom: 0;
@@ -387,6 +443,7 @@
                         text-decoration: none;
                         display: flex;
                         gap: 8px;
+                        width: 100%;
                         color: var(--p-color);
 
                         img {
@@ -403,14 +460,22 @@
 
                             display: flex;
                             flex-direction: column;
+                            justify-content: space-between;
+                            width: 100%;
 
                             h3 {
+                                
+                                font-size: 1.2em !important;
                                 font-family: var(--header-font);
+
+                            }
+
+                            > p, > div {
+                                font-size: .95em;
                             }
 
                             .result-item-date-price {
                                 
-                                flex: 1 0 auto;
                                 display: flex;
                                 padding-top: 5px;
                                 flex-direction: column;
@@ -418,6 +483,26 @@
 
                                 .result-item-date {
                                     font-size: .8em;
+                                }
+
+                                .result-item-price {
+
+                                    display: flex;
+                                    justify-content: space-between;
+
+                                    span {
+
+                                        flex: 1 1 50%;
+                                        margin-top: 2px;
+
+                                        &:last-child {
+                                            font-weight: 700;
+                                            text-align: right;
+                                            color: var(--primary-border);
+                                        }
+
+                                    }
+
                                 }
 
                             }
@@ -430,7 +515,6 @@
 
                 &.horizontal {
                     
-                    max-height: 300px;
                     overflow-y: none;
                     overflow-x: auto;
                     display: flex;
@@ -450,7 +534,18 @@
                             img {
                                 width: 100%;
                                 max-width: none;
-                                height: 200px;
+                                height: 180px;
+                            }
+
+                            .result-item-price {
+                                
+                                display: block !important;
+
+                                span {
+                                    text-align: left !important;
+                                    display: block !important;
+                                }
+
                             }
 
                         }

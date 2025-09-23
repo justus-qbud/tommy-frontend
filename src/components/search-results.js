@@ -50,11 +50,23 @@ export class SearchResults {
         <a class="result-item" data-id="${result.id}" href="${result.url}" target="_blank">
           <img src="${result.image_url}">
           <div classname="result-text">
-            <h3>${result.name}</h3>
+            <div classname="result-text-title-desc">
+              <h3>${result.name}</h3>
+              <p>${removeAttributes(result.description)}</p>
+            </div>
             <div class="result-item-date-price">
-              <span class="result-item-date">${result["date-from"]} - ${result["date-till"]}</span>
+              <span class="result-item-date">
+                ${new Date(result["date-from"]).toLocaleDateString(navigator.language, {dateStyle: "medium"})} 
+                 - 
+                ${new Date(result["date-till"]).toLocaleDateString(navigator.language, {dateStyle: "medium"})} 
+              </span>
               <span class="result-item-price">
+                <span>
                 ${result.price.total ? `&euro;${Math.round(result.price.total)},-` : "Geen prijs"}
+                </span>
+                <span>
+                  Boek nu
+                </span>
               </span>
             </div>
           </div>
@@ -82,7 +94,7 @@ export class SearchResults {
     resultsButtons: () => `
       <div id="tommy-results-buttons">
         <div id="tommy-results-sort">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
+          <svg id="tommy-results-sort-show" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
           <ul>
             <li>Standaard</li>
             <li>Prijs oplopend</li>
@@ -170,6 +182,32 @@ export class SearchResults {
       document.getElementById("tommy-results-view").classList.remove("horizontal");
     });
 
+    document.getElementById("tommy-results-sort-show").addEventListener("click", () => {
+      document.getElementById("tommy-results-sort").classList.toggle("show");
+    })
+
   }
 
+  setLoading(loading) {
+
+    if (loading) {
+      const loadingText = document.getElementById("tommy-results-none");
+      if (loadingText) {
+        loadingText.classList.add("hide");
+        setTimeout(() => {
+          loadingText.textContent = "Aan het laden..."; 
+          loadingText.classList.remove("hide");  
+        }, 250);
+      }
+    }
+
+  }
+
+}
+
+function removeAttributes(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  div.querySelectorAll("*").forEach(el => [...el.attributes].forEach(attr => el.removeAttribute(attr.name)));
+  return div.innerHTML;
 }

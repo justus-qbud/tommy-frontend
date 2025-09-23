@@ -36,7 +36,6 @@ class SearchWidget {
       minQueryLength: this.options.minQueryLength || 3,
       debounceDelay: 500,
       onSearch: async (query) => await this.handleSearch(query),
-      onClear: () => this.handleClearSearch(),
       onFocus: () => this.resultsComponent.show(),
       onBlur: () => this.resultsComponent.hide(),
     });
@@ -57,12 +56,15 @@ class SearchWidget {
   }
 
   async handleSearch(query) {
-    // Remove this line: this.searchInput.setLoading(true);
-    
-    if (!query) {
-      this.resultsComponent.updateResults([]);
+   
+    if (!query || query.length < 5) {
+      this.state.results = [];
+      this.resultsComponent.setLoading(false);
+      this.resultsComponent.updateResults([], {});
       return;
     }
+
+    this.resultsComponent.setLoading(true);
 
     try {
       const [results, parse] = await this.searchService.search(query);
@@ -72,24 +74,16 @@ class SearchWidget {
       
     } catch (error) {
       console.error('Search failed:', error);
-      this.resultsComponent.updateResults([]);
+      this.resultsComponent.updateResults([], {});
       
       if (this.options.onSearchError) {
         this.options.onSearchError(error);
       }
     } finally {
-      // Remove this line: this.searchInput.setLoading(false);
+      this.resultsComponent.setLoading(false);
     }
-  }
 
-  handleClearSearch() {
-    this.state.results = [];
-    this.resultsComponent.updateResults([]);
-    
-    // Cancel any ongoing search
-    this.searchService.cancel();
   }
-
 
   async performSearch(query) {
     await this.handleSearch(query);
