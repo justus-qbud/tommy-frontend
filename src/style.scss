@@ -2,7 +2,6 @@
 
 #tommy-search-widget {
 
-    padding: 6px;
     min-width: 320px;
     border: 1px solid var(--light-border);
     border-radius: 35px;
@@ -20,6 +19,8 @@
     }
 
     #tommy-search-container {
+        
+        margin: 8px;
 
         #tommy-search-bar {
 
@@ -203,8 +204,8 @@
                 justify-content: space-between;
                 align-items: center;
                 border-bottom: 1px solid var(--lighter-border);
-                padding-bottom: 8px;
-                margin-bottom: 8px;
+                margin-top: -8px;
+                padding: 0 8px 8px;
 
                 #tommy-results-tags {
 
@@ -418,11 +419,11 @@
             #tommy-results-list {
 
                 max-height: 500px;
-                padding-top: 8px;
-                margin-top: -8px;
-                margin-bottom: 20px;
-                padding-right: 8px;
+                border-bottom: 1px solid var(--lighter-border);
+                margin: 0 0 8px;
+                width: 100%;
                 overflow-y: auto;
+                overflow-x: visible;
                 @include transition(opacity .2s);
 
                 &.hide {
@@ -431,22 +432,27 @@
 
                 > li {
 
-                    margin-bottom: 8px;
                     line-height: 1.3;
                     width: 100%;
-                    padding-bottom: 8px;
+                    padding: 8px 8px;
                     border-bottom: 1px solid var(--lighter-border);
+                    @include transition(background-color .3s);
 
                     &:last-child {
                         margin-bottom: 0;
                         border-bottom: none;
                     }
 
+                    &:hover {
+                        background: var(--medium-background);
+                    }
+
                     .result-item {
 
+                        position: relative;
                         text-decoration: none;
                         display: flex;
-                        gap: 8px;
+                        gap: 12px;
                         width: 100%;
                         color: var(--p-color);
 
@@ -457,6 +463,19 @@
                             max-height: 220px;
                             border-radius: 20px;
                             object-fit: cover;
+
+                        }
+
+                        .result-alternative {
+
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            padding: 4px 8px;
+                            font-size: .75em;
+                            border: 1px solid var(--light-border);
+                            border-radius: 8px;
+                                
 
                         }
 
@@ -526,18 +545,15 @@
                     overflow-y: none;
                     overflow-x: auto;
                     display: flex;
-                    padding-bottom: 5px;
+                    padding-bottom: 2px;
 
                     > li {
                         
                         display: block;
                         flex: 0 0 300px;
                         margin-bottom: 0;
-                        margin-right: 10px;
-                        padding-right: 10px;
-                        padding-bottom: 0;
+                        padding: 10px;
                         border-right: 1px solid var(--lighter-border);
-                        border-bottom: none;
 
                         .result-item {
                             
@@ -567,6 +583,30 @@
                     }
 
                 }
+
+            }
+
+        }
+
+        #tommy-results-count {
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7em;
+            margin-bottom: 8px;
+            opacity: .5;
+            @include transition(opacity .2s);
+
+            &.hide {
+                opacity: 0;
+            }
+
+            span {
+                
+                margin-right: 3px;
+                font-weight: 900;
+                color: var(--primary-color);
 
             }
 

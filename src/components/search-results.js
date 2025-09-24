@@ -20,6 +20,7 @@ export class SearchResults {
           ${this.templates.resultsButtons()}
         </div>
         ${this.templates.resultsList()}
+        ${this.templates.resultsCount()}
       </div>
     `,
       
@@ -50,6 +51,7 @@ export class SearchResults {
         <a class="result-item" data-id="${result.id}" href="${result.url}" target="_blank">
           <img src="${result.image_url}">
           <div class="result-text">
+            ${result.alternative ? '<span class="result-alternative">Alternatief</span>' : ""}
             <div class="result-text-title-desc">
               <h3>${result.name}</h3>
               <p>${removeAttributes(result.description)}</p>
@@ -85,6 +87,15 @@ export class SearchResults {
           </div>
         </a>
       </li>
+    `,
+
+    resultsCount: () => `
+      <p id="tommy-results-count">
+        <span id="tommy-results-count-number">
+          ${this.results.length} 
+        </span>
+        accommodaties gevonden
+      </p>
     `,
 
     resultsTags: () => `
@@ -167,6 +178,15 @@ export class SearchResults {
           let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
           newResultsList.classList.remove("hide");
         }, 100);
+      }, 250);
+    }
+
+    const resultsCountNumber = document.getElementById("tommy-results-count-number");
+    if (resultsCountNumber) {
+      resultsCountNumber.parentElement.classList.add("hide");
+      setTimeout(() => {
+        resultsCountNumber.innerHTML = this.results.length;
+        resultsCountNumber.parentElement.classList.remove("hide");
       }, 250);
     }
 

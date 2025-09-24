@@ -46,11 +46,14 @@
 
 :root {
 
+    // general
+    --primary-color: #296cac;
+
     // background
     --medium-background: #eeeeee;
     --light-background: #F5F5F5;
     --lighter-background: #f8f8f8;
-    --error-background: #FFCCCC;
+    --error-background: #ffd3d3;
     --correct-background: #72F386;
 
     // borders
@@ -68,7 +71,7 @@
     --input-placeholder-color: #C3C3C3;
     --input-placeholder-color-focus: #585858;
     --muted-color: #b3b3b3;
-    --error-color: #DB6868;
+    --error-color: hsl(0, 71%, 68%);
     --correct-color: #3E974B;
     --p-color: #333333;
 
