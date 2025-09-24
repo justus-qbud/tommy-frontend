@@ -49,16 +49,29 @@ export class SearchResults {
       <li>
         <a class="result-item" data-id="${result.id}" href="${result.url}" target="_blank">
           <img src="${result.image_url}">
-          <div classname="result-text">
-            <div classname="result-text-title-desc">
+          <div class="result-text">
+            <div class="result-text-title-desc">
               <h3>${result.name}</h3>
               <p>${removeAttributes(result.description)}</p>
             </div>
             <div class="result-item-date-price">
               <span class="result-item-date">
-                ${new Date(result["date-from"]).toLocaleDateString(navigator.language, {dateStyle: "medium"})} 
-                 - 
-                ${new Date(result["date-till"]).toLocaleDateString(navigator.language, {dateStyle: "medium"})} 
+                ${(() => {
+                  const fromDate = new Date(result["date-from"]);
+                  const tillDate = new Date(result["date-till"]);
+                  const currentYear = new Date().getFullYear();
+                  
+                  const includeYear = fromDate.getFullYear() !== currentYear || tillDate.getFullYear() !== currentYear;
+                  
+                  // Use explicit options to match "medium" style but conditionally include year
+                  const formatOptions = {
+                    year: includeYear ? 'numeric' : undefined,
+                    month: 'short', 
+                    day: 'numeric'
+                  };
+                  
+                  return `${fromDate.toLocaleDateString(navigator.language, formatOptions)} - ${tillDate.toLocaleDateString(navigator.language, formatOptions)}`;
+                })()}
               </span>
               <span class="result-item-price">
                 <span>

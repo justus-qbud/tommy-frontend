@@ -191,7 +191,7 @@
 
         &.show {
             max-height: 600px;
-            padding-top: 5px;
+            padding-top: 8px;
             @include transition(max-height 1s, padding .25s);
         }
 
@@ -203,8 +203,8 @@
                 justify-content: space-between;
                 align-items: center;
                 border-bottom: 1px solid var(--lighter-border);
-                padding-bottom: 5px;
-                margin-bottom: 5px;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
 
                 #tommy-results-tags {
 
@@ -418,9 +418,10 @@
             #tommy-results-list {
 
                 max-height: 500px;
-                padding-top: 5px;
-                margin-top: -5px;
+                padding-top: 8px;
+                margin-top: -8px;
                 margin-bottom: 20px;
+                padding-right: 8px;
                 overflow-y: auto;
                 @include transition(opacity .2s);
 
@@ -430,15 +431,18 @@
 
                 > li {
 
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                     line-height: 1.3;
                     width: 100%;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--lighter-border);
 
                     &:last-child {
                         margin-bottom: 0;
+                        border-bottom: none;
                     }
 
-                    a {
+                    .result-item {
 
                         text-decoration: none;
                         display: flex;
@@ -456,22 +460,26 @@
 
                         }
 
-                        div {
+                        .result-text {
 
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
                             width: 100%;
 
-                            h3 {
+                            .result-text-title-desc {
+
+                                h3 {
                                 
-                                font-size: 1.2em !important;
-                                font-family: var(--header-font);
+                                    font-size: 1.2em !important;
+                                    font-family: var(--header-font);
 
-                            }
+                                }
 
-                            > p, > div {
-                                font-size: .95em;
+                                > p, > div {
+                                    font-size: .9em;
+                                }
+
                             }
 
                             .result-item-date-price {
@@ -520,16 +528,21 @@
                     display: flex;
                     padding-bottom: 5px;
 
-                    li {
+                    > li {
                         
                         display: block;
                         flex: 0 0 300px;
                         margin-bottom: 0;
                         margin-right: 10px;
+                        padding-right: 10px;
+                        padding-bottom: 0;
+                        border-right: 1px solid var(--lighter-border);
+                        border-bottom: none;
 
-                        a {
+                        .result-item {
                             
                             display: block;
+                            height: 100%;
 
                             img {
                                 width: 100%;
@@ -537,14 +550,15 @@
                                 height: 180px;
                             }
 
-                            .result-item-price {
-                                
-                                display: block !important;
+                            .result-text {
 
-                                span {
-                                    text-align: left !important;
-                                    display: block !important;
+                                height: calc(100% - 185px);
+
+                                .result-item-date-price {
+                                    flex: 1 0 auto;
+                                    justify-content: flex-end;
                                 }
+                                
 
                             }
 
