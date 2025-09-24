@@ -14,6 +14,7 @@ class SearchInput {
     
     this.state = {
       query: '',
+      lastQuery: ''
     };
     
     this.debounceTimer = null;
@@ -54,12 +55,10 @@ class SearchInput {
   }
 
   bindEvents() {
-    // Input event with debouncing
     this.element.addEventListener('input', (e) => {
       this.handleInput(e.target.value);
     });
     
-    // Focus and blur events
     this.element.addEventListener('focus', () => {
       this.options.onFocus();
     });
@@ -73,9 +72,8 @@ class SearchInput {
 
   handleInput(value) {
     const trimmedValue = value.trim();
-    this.state.query = value; // Keep original value for input display
+    this.state.query = value;
     
-    // Clear previous debounce timer
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
     }
@@ -94,6 +92,14 @@ class SearchInput {
 
   async triggerSearch() {
     const query = this.state.query.trim();
+    const normalizedQuery = query.toLowerCase().replace(/[^a-z0-9]/g, '');
+      
+    if (normalizedQuery === this.state.lastQuery) {
+      return;
+    }
+      
+    this.state.lastQuery = normalizedQuery;
+
     if (query.length >= this.options.minQueryLength) {
       this.setLoading(true);
       try {
