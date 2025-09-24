@@ -198,7 +198,7 @@ export class SearchResults {
   }
 
   hide() {
-    // this.container.classList.remove("show");
+    this.container.classList.remove("show");
   }
 
   bindEvents() {

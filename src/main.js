@@ -123,7 +123,7 @@ class SearchWidget {
 document.addEventListener('DOMContentLoaded', () => {
   const widgetContainerElement = document.getElementById("tommy-widget-container");
   new SearchWidget(widgetContainerElement, {
-    placeholder: "Zoeken...",
+    placeholder: "Je gewenste verblijfsdata...",
     minQueryLength: 3,
     searchConfig: {
       apiUrl: "localhost:5000/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
