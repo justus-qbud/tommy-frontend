@@ -120,9 +120,9 @@ export class SearchResults {
         <div id="tommy-results-sort">
           <svg id="tommy-results-sort-show" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
           <ul>
-            <li>Standaard</li>
-            <li>Prijs oplopend</li>
-            <li>Prijs aflopend</li>
+            <li id="tommy-results-sort-default">Standaard</li>
+            <li id="tommy-results-sort-price-increasing">Prijs oplopend</li>
+            <li id="tommy-results-sort-price-decreasing">Prijs aflopend</li>
           </ul>
         </div>
         <div id="tommy-results-view" ${!this.vertical ? 'class="horizontal"' : ''}>
@@ -217,7 +217,22 @@ export class SearchResults {
 
     document.getElementById("tommy-results-sort-show").addEventListener("click", () => {
       document.getElementById("tommy-results-sort").classList.toggle("show");
-    })
+    });
+
+    document.getElementById("tommy-results-sort-default").addEventListener("click", () => {
+      this.sortResults('default');
+      document.getElementById("tommy-results-sort").classList.remove("show");
+    });
+
+    document.getElementById("tommy-results-sort-price-increasing").addEventListener("click", () => {
+      this.sortResults('price-asc');
+      document.getElementById("tommy-results-sort").classList.remove("show");
+    });
+
+    document.getElementById("tommy-results-sort-price-decreasing").addEventListener("click", () => {
+      this.sortResults('price-desc');
+      document.getElementById("tommy-results-sort").classList.remove("show");
+    });
 
   }
 
@@ -234,6 +249,47 @@ export class SearchResults {
       }
     }
 
+  }
+
+  sortResults(sortType) {
+    const resultsList = document.getElementById("tommy-results-list");
+    if (!resultsList) return;
+
+    resultsList.classList.add("hide");
+    
+    setTimeout(() => {
+      switch (sortType) {
+        case 'price-asc':
+          this.results.sort((a, b) => {
+            const priceA = a.price?.total || 0;
+            const priceB = b.price?.total || 0;
+            return priceA - priceB;
+          });
+          break;
+        case 'price-desc':
+          this.results.sort((a, b) => {
+            const priceA = a.price?.total || 0;
+            const priceB = b.price?.total || 0;
+            return priceB - priceA;
+          });
+          break;
+        case 'default':
+        default:
+          // Restore original order: regular results first, then alternatives
+          this.results.sort((a, b) => {
+            if (a.alternative && !b.alternative) return 1;
+            if (!a.alternative && b.alternative) return -1;
+            return 0;
+          });
+          break;
+      }
+
+      resultsList.innerHTML = this.results.map(result => this.templates.resultItem(result)).join('');
+      
+      setTimeout(() => {
+        resultsList.classList.remove("hide");
+      }, 100);
+    }, 250);
   }
 
 }

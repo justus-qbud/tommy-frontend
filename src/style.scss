@@ -259,6 +259,7 @@
                         border-radius: 10px;
                         height: 100%;
                         border: 1px solid var(--light-border);
+                        z-index: 999;
 
                         > svg {
                             
@@ -469,13 +470,13 @@
                         .result-alternative {
 
                             position: absolute;
-                            top: 0;
-                            right: 0;
+                            top: 8px;
+                            left: 8px;
                             padding: 4px 8px;
                             font-size: .75em;
                             border: 1px solid var(--light-border);
-                            border-radius: 8px;
-                                
+                            border-radius: 20px;
+                            background: var(--lighter-background);
 
                         }
 
@@ -552,7 +553,7 @@
                         display: block;
                         flex: 0 0 300px;
                         margin-bottom: 0;
-                        padding: 10px;
+                        padding: 8px;
                         border-right: 1px solid var(--lighter-border);
 
                         .result-item {
@@ -564,6 +565,10 @@
                                 width: 100%;
                                 max-width: none;
                                 height: 180px;
+                            }
+
+                            .result-alternative {
+                                right: 8px;
                             }
 
                             .result-text {
