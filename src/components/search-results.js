@@ -19,7 +19,9 @@ export class SearchResults {
           ${this.templates.resultsTags()}
           ${this.templates.resultsButtons()}
         </div>
-        ${this.templates.resultsList()}
+        <div id="tommy-results-list-wrapper" ${!this.vertical ? 'class="horizontal"' : ''}>
+          ${this.templates.resultsList()}
+        </div>
         ${this.templates.resultsCount()}
       </div>
     `,
@@ -40,7 +42,7 @@ export class SearchResults {
       }
       const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
       return `
-        <ul id="tommy-results-list" class="hide scroll ${!this.vertical ? 'class="horizontal"' : ''}">
+        <ul id="tommy-results-list" class="hide scroll">
           ${resultsList}
         </ul>
       `
@@ -175,8 +177,12 @@ export class SearchResults {
       setTimeout(() => {
         resultsList.outerHTML = this.templates.resultsList();
         setTimeout(() => {
+          
           let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
           newResultsList.classList.remove("hide");
+
+          this.setupScrollDetection();
+
         }, 100);
       }, 250);
     }
@@ -209,8 +215,9 @@ export class SearchResults {
       resultsList?.classList.add("hide");
       document.getElementById("tommy-results-view").classList.add("horizontal");
       setTimeout(() => {
-        resultsList?.classList.add("horizontal");
+        document.getElementById("tommy-results-list-wrapper")?.classList.add("horizontal");
         resultsList?.classList.remove("hide");
+        resultsList?.classList.add("horizontal");
       }, 250);
     });
 
@@ -220,8 +227,9 @@ export class SearchResults {
       resultsList?.classList.add("hide")
       document.getElementById("tommy-results-view").classList.remove("horizontal");
       setTimeout(() => {
-        resultsList?.classList.remove("horizontal");
+        document.getElementById("tommy-results-list-wrapper")?.classList.remove("horizontal");
         resultsList?.classList.remove("hide");
+        resultsList?.classList.remove("horizontal");
       }, 250);
     });
 
@@ -243,6 +251,8 @@ export class SearchResults {
       this.sortResults('price-desc');
       document.getElementById("tommy-results-sort").classList.remove("show");
     });
+
+    this.setupScrollDetection();
 
   }
 
@@ -300,6 +310,38 @@ export class SearchResults {
         resultsList.classList.remove("hide");
       }, 100);
     }, 250);
+  }
+
+  setupScrollDetection() {
+
+    const resultsListWrapper = document.getElementById("tommy-results-list-wrapper");
+    const resultsList = document.getElementById("tommy-results-list");
+    
+    if (!resultsList || !resultsListWrapper) return;
+
+    const updateScrollClasses = () => {
+      const { scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth } = resultsList;
+      
+      resultsListWrapper.classList.remove("top", "bottom", "left", "right");
+      
+      if (scrollTop === 0) {
+        resultsListWrapper.classList.add("top");
+      }
+      if (scrollTop + clientHeight >= scrollHeight - 1) {
+        resultsListWrapper.classList.add("bottom");
+      }
+      if (scrollLeft === 0) {
+        resultsListWrapper.classList.add("left");
+      }
+      if (scrollLeft + clientWidth >= scrollWidth - 1) {
+        resultsListWrapper.classList.add("right");
+      }
+    };
+
+    resultsList.addEventListener("scroll", updateScrollClasses);
+    
+    // Initial check
+    setTimeout(updateScrollClasses, 150);
   }
 
 }
