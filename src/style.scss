@@ -555,6 +555,7 @@
                         margin-bottom: 0;
                         padding: 8px;
                         border-right: 1px solid var(--lighter-border);
+                        border-bottom: none;
 
                         .result-item {
                             
@@ -618,9 +619,7 @@
     .scroll {
 
         &::-webkit-scrollbar-track {
-            background: var(--input-background);
-            border-radius: 20px;
-            border: 1px solid var(--primary-border);
+            border: 1px solid var(--lighter-border);
         }
 
         &::-webkit-scrollbar {
@@ -633,10 +632,10 @@
             width: 12px;
             height: 16px;
             background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNS44NzhsNCA0LjEyMiA4LTggOCA4IDQtNC4xMjJMMTIgNHoiIGZpbGw9InJnYigyMTAsIDIxMCwgMjEwKSIvPjwvc3ZnPg==");
-            background-size: 10px;
-            border-radius: 50%;
+            background-size: 8px;
             background-repeat: no-repeat;
             background-position: 50% 50%;
+            border-left: 1px solid var(--lighter-border);
 
             &:hover {
             background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNS44NzhsNCA0LjEyMiA4LTggOCA4IDQtNC4xMjJMMTIgNHoiIGZpbGw9InJnYigyMDAsIDIwMCwgMjAwKSIvPjwvc3ZnPg==");
@@ -651,10 +650,10 @@
             width: 12px;
             height: 16px;
             background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgOC4xMjJsLTQtNC4xMjItOCA4LTgtOC00IDQuMTIyTDEyIDIweiIgZmlsbD0icmdiKDIxMCwgMjEwLCAyMTApIi8+PC9zdmc+");
-            background-size: 10px;
-            border-radius: 50%;
+            background-size: 8px;
             background-position: 50% 50%;
             background-repeat: no-repeat;
+            border-left: 1px solid var(--lighter-border);
         
             &:hover {
             background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgOC4xMjJsLTQtNC4xMjItOCA4LTgtOC00IDQuMTIyTDEyIDIweiIgZmlsbD0icmdiKDIwMCwgMjAwLCAyMDApIi8+PC9zdmc+");
@@ -666,17 +665,16 @@
         }
             
         &::-webkit-scrollbar-thumb {
-            background: var(--light-border);
-            border-radius: 20px;
+            background: var(--medium-dark-background);
             border: 1px solid rgb(235, 235, 235);
         }
 
         &::-webkit-scrollbar-thumb:hover {
-            background: var(--very-light-text);
+            background: var(--dark-background);
         }
 
         &::-webkit-scrollbar-thumb:active {
-            background: var(--placeholder-text);
+            background: var(--darker-background);
         }
             
         &::-webkit-scrollbar-button:hover {
@@ -687,17 +685,17 @@
 
             &::-webkit-scrollbar {
                 height: 14px;
-                padding-left: 0;
             }
 
             &::-webkit-scrollbar-button:start:decrement {
                 width: 16px;
-                height: 12px;
+                height: 11px;
                 background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTUuODc4IDBsNC4xMjIgNEwxMiAxMmw4IDgtNC4xMjIgNEw0IDEyeiIgZmlsbD0icmdiKDIxMCwgMjEwLCAyMTApIi8+PC9zdmc+");
-                background-size: 10px;
-                border-radius: 50%;
+                background-size: 8px;
                 background-repeat: no-repeat;
                 background-position: 50% 50%;
+                border-top: 1px solid var(--lighter-border);
+                border-left: none;
 
                 &:hover {
                     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTUuODc4IDBsNC4xMjIgNEwxMiAxMmw4IDgtNC4xMjIgNEw0IDEyeiIgZmlsbD0icmdiKDIwMCwgMjAwLCAyMDApIi8+PC9zdmc+");
@@ -711,12 +709,13 @@
 
             &::-webkit-scrollbar-button:end:increment {
                 width: 16px;
-                height: 12px;
+                height: 11px;
                 background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNOC4xMjIgMjRsLTQuMTIyLTQgOC04LTgtOCA0LjEyMi00IDExLjg3OCAxMnoiIGZpbGw9InJnYigyMTAsIDIxMCwgMjEwKSIvPjwvc3ZnPg==");
-                background-size: 10px;
-                border-radius: 50%;
+                background-size: 8px;
                 background-position: 50% 50%;
                 background-repeat: no-repeat;
+                border-top: 1px solid var(--lighter-border);
+                border-left: none;
                 @include transform(scaleX(-1));
             
                 &:hover {

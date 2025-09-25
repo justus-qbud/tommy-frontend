@@ -205,14 +205,24 @@ export class SearchResults {
 
     document.getElementById("tommy-results-view-hor").addEventListener("click", () => {
       this.vertical = false;
-      document.getElementById("tommy-results-list")?.classList.add("horizontal");
+      const resultsList = document.getElementById("tommy-results-list");
+      resultsList?.classList.add("hide");
       document.getElementById("tommy-results-view").classList.add("horizontal");
+      setTimeout(() => {
+        resultsList?.classList.add("horizontal");
+        resultsList?.classList.remove("hide");
+      }, 250);
     });
 
     document.getElementById("tommy-results-view-ver").addEventListener("click", () => {
       this.vertical = true;
-      document.getElementById("tommy-results-list")?.classList.remove("horizontal");
+      const resultsList = document.getElementById("tommy-results-list");
+      resultsList?.classList.add("hide")
       document.getElementById("tommy-results-view").classList.remove("horizontal");
+      setTimeout(() => {
+        resultsList?.classList.remove("horizontal");
+        resultsList?.classList.remove("hide");
+      }, 250);
     });
 
     document.getElementById("tommy-results-sort-show").addEventListener("click", () => {
