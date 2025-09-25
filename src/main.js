@@ -37,8 +37,15 @@ class SearchWidget {
       debounceDelay: 500,
       onSearch: async (query) => await this.handleSearch(query),
       onFocus: () => this.resultsComponent.show(),
-      onBlur: () => this.resultsComponent.hide(),
     });
+
+    document.addEventListener("click", (e) => {
+      const widget = document.getElementById("tommy-search-widget")
+      if (!widget.contains(e.target)) {
+        this.resultsComponent.hide();
+      }
+    });
+
   }
 
   template() {
