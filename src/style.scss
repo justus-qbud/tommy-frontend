@@ -188,18 +188,18 @@
         max-height: 0;
         overflow: hidden;
         border-radius: 0 0 30px 30px;
-        @include transition(max-height .15s, padding .25s);
+        @include transition(max-height .3s, padding .15s ease .1s);
 
         &.show {
             
             max-height: 600px;
             padding-top: 8px;
-            @include transition(max-height 1s, padding .25s);
+            @include transition(max-height .3s, padding .15s);
 
             &.no-results {
                 
                 max-height: 250px;
-                @include transition(max-height .4s, padding .1s);
+                @include transition(max-height .2s, padding .1s);
 
                 #tommy-results-list-wrapper {
 
