@@ -52,7 +52,7 @@ class SearchWidget {
     return `
       <div id="tommy-search-widget">
         <div id="tommy-search-container"></div>
-        <div id="tommy-results-container"></div>
+        <div id="tommy-results-container" class="no-results"></div>
       </div>
     `;
   }

@@ -196,6 +196,12 @@ export class SearchResults {
       }, 250);
     }
 
+    if (this.results.length) {
+      this.container.classList.remove("no-results");
+    } else {
+      this.container.classList.add("no-results");
+    }
+
     this.loading = false;
   }
 

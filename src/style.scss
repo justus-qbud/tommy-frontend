@@ -191,9 +191,26 @@
         @include transition(max-height .15s, padding .25s);
 
         &.show {
+            
             max-height: 600px;
             padding-top: 8px;
             @include transition(max-height 1s, padding .25s);
+
+            &.no-results {
+                
+                max-height: 250px;
+                @include transition(max-height .4s, padding .1s);
+
+                #tommy-results-list-wrapper {
+
+                    &:before, &:after {
+                        opacity: 0 !important;
+                    }
+
+                }
+
+            }
+
         }
 
         #tommy-results {
