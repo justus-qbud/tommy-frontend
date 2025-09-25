@@ -40,7 +40,7 @@ class SearchService {
 
     return new Promise((resolve, reject) => {
       fetch(
-        "http://localhost:5000/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?" + params.toString(),
+        "/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?" + params.toString(),
         {
           method: "get",
           mode: "cors",

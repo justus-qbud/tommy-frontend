@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     placeholder: "Je gewenste verblijfsdata...",
     minQueryLength: 3,
     searchConfig: {
-      apiUrl: "localhost:5000/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
+      apiUrl: "/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
       timeout: 5000
     },
   });
