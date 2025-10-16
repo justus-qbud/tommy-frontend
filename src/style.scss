@@ -712,6 +712,21 @@
                             border-right: 1px solid var(--lighter-border);
                             border-bottom: none;
 
+                            &#tommy-results-no-accommodation-groups {
+                                
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                z-index: 9;
+                                border-bottom: 1px solid var(--lighter-border);
+
+                                ~ li {
+                                    margin-top: calc(16px + .8em);
+                                }
+
+                            }
+
                             .result-item {
                                 
                                 display: block;
