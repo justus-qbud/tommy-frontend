@@ -37,7 +37,7 @@ export class SearchResults {
         let message;
         if (!this.tags.dates) {
           message = "Voer je gewenste <span>verblijfsdata</span> in.";
-        } else if (!this.tags.accommodation_groups) {
+        } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)
             .map(([id, name]) => `<span class="clickable" onclick="
               (function() {
