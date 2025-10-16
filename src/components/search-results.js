@@ -1,7 +1,9 @@
+import { getLocalStorage, setLocalStorage } from "../utils";
+
 export class SearchResults {
-  constructor(container, options = {}) {
+  constructor(container) {
+    
     this.container = container;
-    this.options = options;
     this.results = [];
     this.tags = {
       dates: false,
@@ -10,6 +12,10 @@ export class SearchResults {
     }
     this.loading = false;
     this.vertical = true;
+
+    this.options = [];
+    this.getOptions();
+
   }
 
   templates = {
@@ -32,7 +38,17 @@ export class SearchResults {
         if (!this.tags.dates) {
           message = "Voer je gewenste <span>verblijfsdata</span> in.";
         } else if (!this.tags.accommodation_groups) {
-          message = "Voeg toe: wil je <span>kamperen of huren</span>?";
+          let accommodationOptions = Object.entries(this.options.accommodation_groups)
+            .map(([id, name]) => `<span class="clickable" onclick="
+              (function() {
+                const input = document.getElementById('tommy-search-input');
+                input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
+                input.dispatchEvent(new Event('input'));
+              })()
+            ">${name}</span>`);
+          message = accommodationOptions.length > 2
+            ? `Geef je voorkeur aan: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
+            : `Geef je voorkeur aan: wil je ${accommodationOptions.join(' of ')}?`;
         } else if (!this.tags.age_categories) {
           message = "Wat is de <span>samenstelling van je reisgezelschap</span>?"
         } else {
@@ -40,9 +56,26 @@ export class SearchResults {
         }
         return `<p id="tommy-results-none" class="hide">${message}</p>`;
       }
+
+      let accommodationGroupsMissingMessage;
+      if (!this.tags.accommodation_groups) {
+        let accommodationOptions = Object.entries(this.options.accommodation_groups)
+            .map(([id, name]) => `<span class="clickable" onclick="
+              (function() {
+                const input = document.getElementById('tommy-search-input');
+                input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
+                input.dispatchEvent(new Event('input'));
+              })()
+            ">${name}</span>`);
+        accommodationGroupsMissingMessage = accommodationOptions.length > 2
+            ? `Verfijn je zoekopdracht: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
+            : `Verfijn je zoekopdracht: wil je ${accommodationOptions.join(' of ')}?`;
+      }
+
       const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
       return `
         <ul id="tommy-results-list" class="hide scroll">
+          ${accommodationGroupsMissingMessage ? `<li id="tommy-results-no-accommodation-groups">${accommodationGroupsMissingMessage}</li>` : ""}
           ${resultsList}
         </ul>
       `
@@ -56,7 +89,7 @@ export class SearchResults {
             ${result.alternative ? '<span class="result-alternative">Alternatief</span>' : ""}
             <div class="result-text-title-desc">
               <h3>${result.name}</h3>
-              <p>${removeAttributes(result.description)}</p>
+              <div>${removeAttributesAndEmptyElements(result.description)}</div>
             </div>
             <div class="result-item-date-price">
               <span class="result-item-date">
@@ -136,6 +169,32 @@ export class SearchResults {
 
   };
 
+  getOptions() {
+
+    const catalogOptionsKey = "tommy_catalog_options";
+    const catalogOptions = getLocalStorage(catalogOptionsKey);
+    if (catalogOptions) {
+      this.options = catalogOptions;
+      return;
+    }
+
+    fetch("/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f", 
+      {
+          method: "get",
+          mode: "cors",
+          headers: {
+            Accept: "application/json",
+          }
+      },
+    ).then((response) => {
+      return response.json()
+    }).then((responseJson) => {
+      setLocalStorage(catalogOptionsKey, responseJson.data.filters, .5);  // half a day
+      this.options = responseJson.data.filters;
+    })
+
+  }
+
   render() {
     this.container.innerHTML = this.templates.container();
     setTimeout(() => {
@@ -169,7 +228,7 @@ export class SearchResults {
         }
       }
     }
-    this.results = [...results, ...alternatives];
+    this.results = results.length ? results : alternatives;
 
     const resultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
     if (resultsList) {
@@ -352,9 +411,25 @@ export class SearchResults {
 
 }
 
-function removeAttributes(html) {
+function removeAttributesAndEmptyElements(html) {
   const div = document.createElement("div");
   div.innerHTML = html;
+  
+  // Remove all attributes
   div.querySelectorAll("*").forEach(el => [...el.attributes].forEach(attr => el.removeAttribute(attr.name)));
+  
+  // Remove empty elements
+  const emptyElements = div.querySelectorAll('*');
+  emptyElements.forEach(el => {
+    // Check if element is completely empty (no text, no children, no replaced content like img)
+    if (
+      el.childNodes.length === 0 && 
+      !['img', 'input', 'br', 'hr'].includes(el.tagName.toLowerCase()) &&
+      !el.textContent.trim()
+    ) {
+      el.remove();
+    }
+  });
+  
   return div.innerHTML;
 }
