@@ -230,7 +230,7 @@
 
                     display: flex;
 
-                    span {
+                    > span {
                         
                         display: flex;
                         align-items: center;
@@ -259,6 +259,25 @@
 
                             svg {
                                 fill: var(--correct-color);
+                            }
+
+                        }
+
+                        
+                        @media screen and (max-width: 572px) {
+
+                            & {
+                                border-radius: 15px;
+                            }
+                            
+                            span {
+                                display: none;
+                            }
+
+                            svg {
+                                box-sizing: content-box;
+                                padding: 0 1px;
+                                margin-right: -2px;
                             }
 
                         }
