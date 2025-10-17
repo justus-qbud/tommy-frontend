@@ -263,12 +263,14 @@ export class SearchResults {
 
       // pretty animation
       resultsList.classList.add("hide");
+      resultsList.parentElement.classList.add("hide");
       setTimeout(() => {
         resultsList.outerHTML = newResultsList;
         setTimeout(() => {
           
           let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
           newResultsList.classList.remove("hide");
+          newResultsList.parentElement.classList.remove("hide");
 
           this.setupScrollDetection();
 
@@ -283,7 +285,7 @@ export class SearchResults {
       setTimeout(() => {
         resultsCountNumber.innerHTML = this.results.length;
         resultsCountNumber.parentElement.classList.remove("hide");
-      }, 250);
+      }, 350);
     }
 
     // add class to communicate height

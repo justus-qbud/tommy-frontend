@@ -505,6 +505,14 @@
 
                 }
 
+                &.hide {
+                    
+                    &:after, &:before {
+                        opacity: 0 !important;
+                    }
+
+                }
+
                 #tommy-results-list {
 
                     max-height: 500px;
