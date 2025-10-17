@@ -10,6 +10,7 @@ export class SearchResults {
       age_categories: false,
       accommodation_groups: false,
     }
+    this.parse = {};
     this.loading = false;
     this.vertical = true;
 
@@ -36,7 +37,12 @@ export class SearchResults {
       if (this.results.length === 0) {
         let message;
         if (!this.tags.dates) {
-          message = "Voer je gewenste <span>verblijfsdata</span> in.";
+          console.log(this.parse);
+          message = (
+            this.parse?.error === "DATES_PAST" ? 
+            "Voer <span>verblijfsdata</span> in de toekomst in." : 
+            "Voer je gewenste <span>verblijfsdata</span> in."
+          );
         } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)
             .map(([id, name]) => `<span class="clickable" onclick="
@@ -72,7 +78,7 @@ export class SearchResults {
             : `Verfijn je zoekopdracht: wil je ${accommodationOptions.join(' of ')}?`;
       }
 
-      const resultsList = this.results.map(result => this.templates.resultItem(result)).join('');
+      const resultsList = this.results ? this.results.map(result => this.templates.resultItem(result)).join('') : [];
       return `
         <ul id="tommy-results-list" class="hide scroll">
           ${accommodationGroupsMissingMessage ? `<li id="tommy-results-no-accommodation-groups">${accommodationGroupsMissingMessage}</li>` : ""}
@@ -206,16 +212,21 @@ export class SearchResults {
 
   updateResults(newResults, newParse) {
 
+    newResults = newResults || [];
     newParse = newParse || {};
+    this.parse = newParse;
+
+    // update tags
     for (const key of ["dates", "age_categories", "accommodation_groups"]) {
-      if (Object.keys(newParse).includes(key)) {
+      if (Object.keys(newParse).includes(key) && newParse[key]) {
         document.getElementById(`tommy-results-tags-${key}`).classList.add("active");
       } else {
         document.getElementById(`tommy-results-tags-${key}`).classList.remove("active");
       }
-      this.tags[key] = Object.keys(newParse).includes(key);
+      this.tags[key] = Object.keys(newParse).includes(key) && !!newParse[key];
     }
 
+    // update results
     const results = [], alternatives = [];
     for (const result of newResults) {
       if (!result.periods) continue;
@@ -228,8 +239,11 @@ export class SearchResults {
         }
       }
     }
+
+    // show alternatives if no results
     this.results = results.length ? results : alternatives;
 
+    // hide and replace results
     const resultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
     if (resultsList) {
       resultsList.classList.add("hide");
@@ -246,6 +260,7 @@ export class SearchResults {
       }, 250);
     }
 
+    // update result count
     const resultsCountNumber = document.getElementById("tommy-results-count-number");
     if (resultsCountNumber) {
       resultsCountNumber.parentElement.classList.add("hide");
@@ -255,6 +270,7 @@ export class SearchResults {
       }, 250);
     }
 
+    // add class to communicate height
     if (this.results.length) {
       this.container.classList.remove("no-results");
     } else {
