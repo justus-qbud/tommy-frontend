@@ -41,7 +41,7 @@ export class SearchResults {
           message = (
             this.parse?.error === "DATES_PAST" ? 
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
-            "Voer je gewenste <span>verblijfsdata</span> in."
+            "Typ hierboven: je gewenste <span>verblijfsdata</span>."
           );
         } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)
@@ -53,10 +53,10 @@ export class SearchResults {
               })()
             ">${name}</span>`);
           message = accommodationOptions.length > 2
-            ? `Geef je voorkeur aan: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
-            : `Geef je voorkeur aan: wil je ${accommodationOptions.join(' of ')}?`;
+            ? `Typ hierboven: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
+            : `Typ hierboven: wil je ${accommodationOptions.join(' of ')}?`;
         } else if (!this.tags.age_categories) {
-          message = "Wat is de <span>samenstelling van je reisgezelschap</span>?"
+          message = "Typ hierboven: de <span>samenstelling van je reisgezelschap</span>."
         } else {
           message = "Geen resultaten.";
         }
