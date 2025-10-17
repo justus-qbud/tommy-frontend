@@ -25,7 +25,7 @@ class SearchService {
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Search request was cancelled');
-        return null; // Return null for cancelled requests
+        return [null, null];
       }
       
       this.activeController = null;
@@ -53,7 +53,7 @@ class SearchService {
         return response.json()
       }).then((responseJson) => {
         resolve([responseJson.data.results, responseJson.data.parse]);
-      })
+      }).catch(() => reject("Service unavailable"));
 
       signal?.addEventListener('abort', () => {
         reject("New request");

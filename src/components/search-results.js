@@ -213,8 +213,11 @@ export class SearchResults {
   updateResults(newResults, newParse) {
 
     newResults = newResults || [];
-    newParse = newParse || {};
-    this.parse = newParse;
+    if (newParse === null) {
+      newParse = this.parse || {};
+    } else {
+      this.parse = newParse;
+    }
 
     // update tags
     for (const key of ["dates", "age_categories", "accommodation_groups"]) {
@@ -246,9 +249,22 @@ export class SearchResults {
     // hide and replace results
     const resultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
     if (resultsList) {
+            
+      const newResultsList =  this.templates.resultsList();
+      
+      // create temp div to compare
+      const tempDiv1 = document.createElement('div');
+      tempDiv1.innerHTML = newResultsList;
+
+      const tempDiv2 = document.createElement('div');
+      tempDiv2.innerHTML = resultsList.outerHTML;
+
+      if (tempDiv1.firstElementChild.innerHTML === tempDiv2.firstElementChild.innerHTML) return;
+
+      // pretty animation
       resultsList.classList.add("hide");
       setTimeout(() => {
-        resultsList.outerHTML = this.templates.resultsList();
+        resultsList.outerHTML = newResultsList;
         setTimeout(() => {
           
           let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
