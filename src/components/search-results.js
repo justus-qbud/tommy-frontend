@@ -37,11 +37,13 @@ export class SearchResults {
       if (this.results.length === 0) {
         let message;
         if (!this.tags.dates) {
-          console.log(this.parse);
           message = (
             this.parse?.error === "DATES_PAST" ? 
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
-            "Typ hierboven: je gewenste <span>verblijfsdata</span>."
+            (document.getElementById("tommy-search-input")?.value.length > 5 ?
+              "Mmh, ik begrijp het nog niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
+              "Typ hierboven: je gewenste <span>verblijfsdata</span>."
+            )
           );
         } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)
@@ -52,11 +54,24 @@ export class SearchResults {
                 input.dispatchEvent(new Event('input'));
               })()
             ">${name}</span>`);
-          message = accommodationOptions.length > 2
-            ? `Typ hierboven: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
-            : `Typ hierboven: wil je ${accommodationOptions.join(' of ')}?`;
+          const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+
+          const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+
+          message = `Leuk! We gaan zoeken van <span>${startFormatted}</span> tot <span>${endFormatted}</span>! `;
+          message += accommodationOptions.length > 2
+            ? `Typ nu ook: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
+            : `Typ nu ook: wil je ${accommodationOptions.join(' of ')}?`;
         } else if (!this.tags.age_categories) {
-          message = "Typ hierboven: de <span>samenstelling van je reisgezelschap</span>."
+          message = "Bijna gereed! Typ nu ook de <span>samenstelling van je reisgezelschap</span>."
         } else {
           message = "Geen resultaten.";
         }
