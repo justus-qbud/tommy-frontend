@@ -56,17 +56,8 @@ export class SearchResults {
                 input.dispatchEvent(new Event('input'));
               })()
             ">${name}</span>`);
-          const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-          });
-
-          const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-          });
+          const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
+          const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
 
           message = `Leuk! We gaan zoeken van <span>${startFormatted}</span> tot <span>${endFormatted}</span>! `;
           message += accommodationOptions.length > 2
@@ -80,25 +71,38 @@ export class SearchResults {
         return `<p id="tommy-results-none" class="hide">${message}</p>`;
       }
 
-      let accommodationGroupsMissingMessage;
-      if (!this.tags.accommodation_groups) {
-        let accommodationOptions = Object.entries(this.options.accommodation_groups)
-            .map(([id, name]) => `<span class="clickable" onclick="
-              (function() {
-                const input = document.getElementById('tommy-search-input');
-                input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
-                input.dispatchEvent(new Event('input'));
-              })()
-            ">${name}</span>`);
-        accommodationGroupsMissingMessage = accommodationOptions.length > 2
-            ? `Verfijn je zoekopdracht: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
-            : `Verfijn je zoekopdracht: wil je ${accommodationOptions.join(' of ')}?`;
+      let resultsMessage;
+      if (this.parse.dates?.start && this.parse.age_categories && Object.keys(this.parse.age_categories).length) {
+
+        const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
+        const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
+
+        resultsMessage = `Gezocht op ${startFormatted} t/m ${endFormatted} voor `;
+        resultsMessage += Object.keys(this.parse.age_categories).map((key) => {
+          return this.parse.age_categories[key] + "× " + this.options.age_categories[key].toLowerCase();
+        }).join(", ");
+
+        resultsMessage += "."
+        if (!this.tags.accommodation_groups) {
+          let accommodationOptions = Object.entries(this.options.accommodation_groups)
+              .map(([id, name]) => `<span class="clickable" onclick="
+                (function() {
+                  const input = document.getElementById('tommy-search-input');
+                  input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
+                  input.dispatchEvent(new Event('input'));
+                })()
+              ">${name}</span>`);
+          resultsMessage += accommodationOptions.length > 2
+              ? ` Verfijn je zoekopdracht: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
+              : ` Verfijn je zoekopdracht: wil je ${accommodationOptions.join(' of ')}?`;
+        }
+
       }
 
       const resultsList = this.results ? this.results.map(result => this.templates.resultItem(result)).join('') : [];
       return `
         <ul id="tommy-results-list" class="hide scroll">
-          ${accommodationGroupsMissingMessage ? `<li id="tommy-results-no-accommodation-groups">${accommodationGroupsMissingMessage}</li>` : ""}
+          ${resultsMessage ? `<li id="tommy-results-message"><p>${resultsMessage}</p></li>` : ""}
           ${resultsList}
         </ul>
       `
