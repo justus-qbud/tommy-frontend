@@ -41,7 +41,7 @@ export class SearchResults {
             this.parse?.error === "DATES_PAST" ? 
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
             (document.getElementById("tommy-search-input")?.value.length > 5 ?
-              "Mmh, ik begrijp het nog niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
+              "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
               "Typ hierboven: je gewenste <span>verblijfsdata</span>."
             )
           );
