@@ -10,7 +10,7 @@ class SearchWidget {
     this.element = element;
     this.options = options;
     this.state = {
-      results: []
+      results: [],
     };
     this.searchService = new SearchService(options.searchConfig || {});
     this.init();
@@ -43,6 +43,7 @@ class SearchWidget {
       const widget = document.getElementById("tommy-search-widget")
       if (!widget.contains(e.target)) {
         this.resultsComponent.hide();
+        this.searchInput.blur();
       }
     });
 
@@ -64,6 +65,8 @@ class SearchWidget {
 
   async handleSearch(query) {
    
+    this.resultsComponent.clearError();
+
     if (!query || query.length < 5) {
       this.state.results = [];
       this.resultsComponent.setLoading(false);
@@ -80,11 +83,10 @@ class SearchWidget {
       this.resultsComponent.updateResults(results, parse);
       
     } catch (error) {
-      this.resultsComponent.updateResults([], null);
-      
-      if (this.options.onSearchError) {
-        this.options.onSearchError(error);
+      if (error.status === 400) {
+        this.resultsComponent.setError("BAD_REQUEST");
       }
+      this.resultsComponent.updateResults([], null);
     } finally {
       this.resultsComponent.setLoading(false);
     }

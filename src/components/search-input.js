@@ -55,6 +55,7 @@ class SearchInput {
   }
 
   bindEvents() {
+
     this.element.addEventListener('input', (e) => {
       this.handleInput(e.target.value);
     });
@@ -62,12 +63,7 @@ class SearchInput {
     this.element.addEventListener('focus', () => {
       this.options.onFocus();
     });
-    
-    this.element.addEventListener('blur', () => {
-      setTimeout(() => {
-        this.options.onBlur();
-      }, 150);
-    });
+
   }
 
   handleInput(value) {
@@ -130,6 +126,10 @@ class SearchInput {
 
   focus() {
     this.element?.focus();
+  }
+
+  blur() {
+    this.element?.blur();
   }
 
   destroy() {

@@ -23,23 +23,22 @@ class SearchService {
       this.activeController = null;
       return [results, parse];
     } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('Search request was cancelled');
-        return [null, null];
-      }
-      
       this.activeController = null;
-      throw error; // Re-throw non-abort errors
+      
+      if (error.name === 'AbortError') {
+        return [null, null];
+      }      
+      // Re-throw with error details intact
+      throw error;
     }
   }
 
   async searchAPI(query, signal) {
-    
     const params = new URLSearchParams();
     params.append("q", query);
 
-    return new Promise((resolve, reject) => {
-      fetch(
+    try {
+      const response = await fetch(
         "/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?" + params.toString(),
         {
           method: "get",
@@ -47,18 +46,23 @@ class SearchService {
           headers: {
             Accept: "application/json",
           },
-          signal: this.activeController.signal
+          signal: signal
         }
-      ).then((response) => {
-        return response.json()
-      }).then((responseJson) => {
-        resolve([responseJson.data.results, responseJson.data.parse]);
-      }).catch(() => reject("Service unavailable"));
+      );
 
-      signal?.addEventListener('abort', () => {
-        reject("New request");
-      });
-    });
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status} ${response.statusText}`);
+      }
+
+      const responseJson = await response.json();
+      return [responseJson.data.results, responseJson.data.parse];
+      
+    } catch (error) {
+
+      throw error;
+
+    }
   }
 
   cancel() {
@@ -68,7 +72,6 @@ class SearchService {
     }
   }
 
-  // Method to update search configuration
   updateConfig(newOptions) {
     this.options = { ...this.options, ...newOptions };
   }

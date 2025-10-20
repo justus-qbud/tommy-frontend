@@ -440,7 +440,7 @@
                 text-align: center;
                 margin: 35px 0;
                 padding: 0 40px;
-                font-size: 1.2em;
+                font-size: 1.15em;
                 color: var(--p-color);
                 opacity: .8;
                 line-height: 1.4;
@@ -452,7 +452,8 @@
 
                 span {
                     
-                    color: rgba(36, 59, 104, .5);
+                    color: var(--primary-color);
+                    font-weight: 600;
 
                     &.clickable {
                         cursor: pointer;

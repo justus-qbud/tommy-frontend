@@ -13,6 +13,8 @@ export class SearchResults {
     this.parse = {};
     this.loading = false;
     this.vertical = true;
+    this.error = null;
+    this.loadingTimeout = null;
 
     this.options = [];
     this.getOptions();
@@ -40,7 +42,7 @@ export class SearchResults {
           message = (
             this.parse?.error === "DATES_PAST" ? 
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
-            (document.getElementById("tommy-search-input")?.value.length > 5 ?
+            (document.getElementById("tommy-search-input")?.value.length >= 5 ?
               "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
               "Typ hierboven: je gewenste <span>verblijfsdata</span>."
             )
@@ -158,7 +160,7 @@ export class SearchResults {
       <div id="tommy-results-tags">
         <span id="tommy-results-tags-dates">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M17 3v-2c0-.552.447-1 1-1s1 .448 1 1v2c0 .552-.447 1-1 1s-1-.448-1-1zm-12 1c.553 0 1-.448 1-1v-2c0-.552-.447-1-1-1-.553 0-1 .448-1 1v2c0 .552.447 1 1 1zm13 13v-3h-1v4h3v-1h-2zm-5 .5c0 2.481 2.019 4.5 4.5 4.5s4.5-2.019 4.5-4.5-2.019-4.5-4.5-4.5-4.5 2.019-4.5 4.5zm11 0c0 3.59-2.91 6.5-6.5 6.5s-6.5-2.91-6.5-6.5 2.91-6.5 6.5-6.5 6.5 2.91 6.5 6.5zm-14.237 3.5h-7.763v-13h19v1.763c.727.33 1.399.757 2 1.268v-9.031h-3v1c0 1.316-1.278 2.339-2.658 1.894-.831-.268-1.342-1.111-1.342-1.984v-.91h-9v1c0 1.316-1.278 2.339-2.658 1.894-.831-.268-1.342-1.111-1.342-1.984v-.91h-3v21h11.031c-.511-.601-.938-1.273-1.268-2z"/></svg>
-          <span>Datums</span>
+          <span>Verblijfsdata</span>
         </span>
         <span id="tommy-results-tags-age_categories">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z"/></svg>
@@ -372,14 +374,20 @@ export class SearchResults {
 
   setLoading(loading) {
 
+    const loadingText = document.getElementById("tommy-results-none");
+
     if (loading) {
-      const loadingText = document.getElementById("tommy-results-none");
       if (loadingText) {
         loadingText.classList.add("hide");
-        setTimeout(() => {
+        this.loadingTimeout = setTimeout(() => {
           loadingText.textContent = "Aan het laden..."; 
           loadingText.classList.remove("hide");  
         }, 250);
+      }
+    }  else if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout);
+      if (loadingText) {
+        loadingText.classList.remove("hide");
       }
     }
 
@@ -456,6 +464,14 @@ export class SearchResults {
     
     // Initial check
     setTimeout(updateScrollClasses, 150);
+  }
+
+  setError(error) {
+    this.error = error;
+  }
+
+  clearError() {
+    this.error = null;
   }
 
 }
