@@ -241,7 +241,7 @@
 
         &.show {
             
-            max-height: 600px;
+            max-height: min(600px, 100dvh - 110px);
             padding-top: 8px;
             @include transition(max-height .3s, padding .15s);
 
