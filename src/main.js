@@ -138,7 +138,7 @@ function initWidget() {
   }
   
   new SearchWidget(widgetContainerElement, {
-    apiUrl: `${API_BASE_URL}/api/v1`,
+    apiUrl: `/api/v1`,
     placeholder: "Typ hier...",
     minQueryLength: 3,
   });
