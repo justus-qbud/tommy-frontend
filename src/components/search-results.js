@@ -74,8 +74,8 @@ export class SearchResults {
 
       const resultsList = this.results ? this.results.map(result => this.templates.resultItem(result)).join('') : [];
       return `
+        ${this.templates.resultsMessage()}
         <ul id="tommy-results-list" class="hide scroll">
-          ${this.templates.resultsMessage()}
           ${resultsList}
         </ul>
       `
