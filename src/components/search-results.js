@@ -1,7 +1,7 @@
 import { getLocalStorage, setLocalStorage } from "../utils";
 
 export class SearchResults {
-  constructor(container) {
+  constructor(container, apiUrl) {
     
     this.container = container;
     this.results = [];
@@ -15,6 +15,7 @@ export class SearchResults {
     this.vertical = true;
     this.error = null;
     this.loadingTimeout = null;
+    this.apiUrl = apiUrl;
 
     this.options = [];
     this.getOptions();
@@ -222,7 +223,7 @@ export class SearchResults {
       return;
     }
 
-    fetch("/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f", 
+    fetch(`${this.apiUrl}/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f`, 
       {
           method: "get",
           mode: "cors",

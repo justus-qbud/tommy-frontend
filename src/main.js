@@ -12,7 +12,7 @@ class SearchWidget {
     this.state = {
       results: [],
     };
-    this.searchService = new SearchService(options.searchConfig || {});
+    this.searchService = new SearchService({apiUrl: this.options.apiUrl});
     this.init();
 
   }
@@ -26,7 +26,7 @@ class SearchWidget {
 
     // Initialize results component
     const resultsContainer = this.element.querySelector('#tommy-results-container');
-    this.resultsComponent = new SearchResults(resultsContainer);
+    this.resultsComponent = new SearchResults(resultsContainer, "/api/v1");
     this.resultsComponent.render();
 
     // Initialize search input component
@@ -60,7 +60,7 @@ class SearchWidget {
 
   render() {
     this.element.innerHTML = this.template();
-    document.getElementById("tommy-widget-container").innerHTML = this.element.innerHTML;
+    document.getElementById("tommy-zb").innerHTML = this.element.innerHTML;
   }
 
   async handleSearch(query, parse) {
@@ -130,13 +130,11 @@ class SearchWidget {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const widgetContainerElement = document.getElementById("tommy-widget-container");
+  const widgetContainerElement = document.getElementById("tommy-zb");
+  const apiUrl = widgetContainerElement.getAttribute("data-api-url") || "/api/v1";
   new SearchWidget(widgetContainerElement, {
+    apiUrl: apiUrl,
     placeholder: "Typ hier...",
     minQueryLength: 3,
-    searchConfig: {
-      apiUrl: "/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
-      timeout: 5000
-    },
   });
 });

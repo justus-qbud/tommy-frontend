@@ -1,7 +1,7 @@
 class SearchService {
   constructor(options = {}) {
     this.options = {
-      apiUrl: options.apiUrl || '/api/search',
+      apiUrl: options.apiUrl,
       timeout: options.timeout || 5000,
       ...options
     };
@@ -43,7 +43,7 @@ class SearchService {
 
     try {
       const response = await fetch(
-        "/api/v1/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?" + params.toString(),
+        `${this.options.apiUrl}/catalog/219b2fc6-d2e0-42e9-a670-848124341c0f/search?` + params.toString(),
         {
           method: "get",
           mode: "cors",
