@@ -18,7 +18,7 @@ export default defineConfig({
       output: {
         inlineDynamicImports: true,
         manualChunks: undefined,
-        entryFileNames: 'tommy-widget.js',
+        entryFileNames: 'tommy-zb.js',
       }
     }
   }

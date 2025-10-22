@@ -138,7 +138,7 @@ function initWidget() {
   }
   
   new SearchWidget(widgetContainerElement, {
-    apiUrl: `/api/v1`,
+    apiUrl: ["localhost", "tommy-zb.qbud.ai"].includes(window.location.hostname) ? `/api/v1` : "https://tommy-zb.qbud.ai/api/v1",
     placeholder: "Typ hier...",
     minQueryLength: 3,
   });
