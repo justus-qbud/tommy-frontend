@@ -9,7 +9,7 @@ class SearchService {
     this.activeController = null;
   }
 
-  async search(query) {
+  async search(query, parse) {
     // Cancel any ongoing request
     if (this.activeController) {
       this.activeController.abort();
@@ -19,9 +19,9 @@ class SearchService {
     this.activeController = new AbortController();
 
     try {
-      const [results, parse] = await this.searchAPI(query, this.activeController.signal);
+      const [results, newParse] = await this.searchAPI(query, parse, this.activeController.signal);
       this.activeController = null;
-      return [results, parse];
+      return [results, newParse];
     } catch (error) {
       this.activeController = null;
       
@@ -33,9 +33,13 @@ class SearchService {
     }
   }
 
-  async searchAPI(query, signal) {
+  async searchAPI(query, parse, signal) {
     const params = new URLSearchParams();
     params.append("q", query);
+    
+    if (parse) {
+      params.append("parse", parse);
+    }
 
     try {
       const response = await fetch(

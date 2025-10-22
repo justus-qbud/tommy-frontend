@@ -22,7 +22,9 @@
 
     #tommy-search-container {
         
+        position: relative;
         margin: 8px;
+        @include transition(padding-bottom .2s);
 
         #tommy-search-bar {
 
@@ -62,12 +64,22 @@
                 outline: none;
                 font-family: var(--p-font);
                 font-size: 1em;
-                @include transition(padding .2s, border-color .2s);
+                @include transition(padding .2s, border-color .2s, background-color);
 
                 &::placeholder {
                     color: var(--input-placeholder-color);
                     opacity: 0;
                     @include transition(opacity .2s);
+                }
+
+                &.disabled {
+
+                    background-color: var(--lighter-background);
+
+                    + #tommy-search-placeholder {
+                        color: var(--muted-color);
+                    }
+
                 }
 
                 &:focus, &.not-empty {
@@ -84,7 +96,7 @@
                     }
 
                     ~ svg {
-                        fill: var(--input-border-focus) !important;
+                        fill: var(--input-border-focus);
                     }
 
                 }
@@ -111,15 +123,24 @@
             }
 
             svg {
+                
                 position: absolute;
                 top: calc(20px + .7em);
-                right: 20px;
+                right: 13px;
                 width: 20px;
                 height: 20px;
-                pointer-events: none;
+                padding: 5px;
+                box-sizing: content-box;
                 fill: var(--input-border);
+                cursor: pointer;
+                z-index: 1;
                 @include transform(translateY(-50%));
                 @include transition(fill .2s, opacity .2s ease .15s);
+
+                &:hover {
+                    fill: var(--primary-color) !important;
+                }
+
             }
 
             .loader {
@@ -149,6 +170,32 @@
                     @include transform(translateY(-50%) rotate(360deg));
                 }
             } 
+
+        }
+
+        #tommy-search-bar-message {
+
+            position: absolute;
+            top: calc(100% - 5px - .6em);
+            width: 100%;
+            font-size: .55em;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            @include transform(translateY(-5px));
+            @include transition(opacity .1s, transform .2s);
+
+        }
+
+        &.ready {
+
+            padding-bottom: calc(6px + .6em);
+
+            #tommy-search-bar-message {
+                opacity: 1;
+                @include transform(translateY(0));
+                @include transition(opacity .2s ease .1s, transform .2s);
+            }
 
         }
 
@@ -655,27 +702,34 @@
 
                     }
 
-                    #tommy-results-message {
+                }
 
-                        padding: 10px 20px;
-                        box-sizing: border-box;
-                        font-size: .65em;
-                        line-height: 1.3;
-                        text-align: center;
+                 #tommy-results-message {
 
-                        &:hover {
-                            background: none;
-                        }
+                    padding: 10px 20px;
+                    box-sizing: border-box;
+                    font-size: .65em;
+                    line-height: 1.3;
+                    text-align: center;
+                    border-bottom: 1px solid var(--lighter-border);
+                    @include transition(opacity .22s);
 
-                        span {
-                            font-weight: 600;
-                            pointer-events: all;
-                            cursor: pointer;
-                        }
+                    &:hover {
+                        background: none;
+                    }
 
+                    span {
+                        font-weight: 600;
+                        pointer-events: all;
+                        cursor: pointer;
+                    }
+
+                    &.hide {
+                        opacity: 0;
                     }
 
                 }
+
 
                 &.horizontal {
 
@@ -743,34 +797,6 @@
                             padding: 8px;
                             border-right: 1px solid var(--lighter-border);
                             border-bottom: none;
-
-                            &#tommy-results-message {
-                                
-                                position: absolute;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                top: 0;
-                                left: 0;
-                                right: 0;
-                                z-index: 9;
-                                border-bottom: 1px solid var(--lighter-border);
-
-                                ~ li {
-                                    margin-top: calc(20px + .8em);
-                                }
-
-                                @media screen and (max-width: 972px) {
-
-                                    min-height: calc(20px + 2.6em);
-                                 
-                                    ~ li {
-                                        margin-top: calc(20px + 1.7em);
-                                    }
-
-                                }
-
-                            }
 
                             .result-item {
                                 

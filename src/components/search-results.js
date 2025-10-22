@@ -42,7 +42,7 @@ export class SearchResults {
           message = (
             this.parse?.error === "DATES_PAST" ? 
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
-            (document.getElementById("tommy-search-input")?.value.length >= 5 ?
+            (document.getElementById("tommy-search-input")?.value.length >= 4 && !this.tags.accommodation_groups && !this.tags.age_categories ?
               "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
               "Typ hierboven: je gewenste <span>verblijfsdata</span>."
             )
@@ -54,6 +54,7 @@ export class SearchResults {
                 const input = document.getElementById('tommy-search-input');
                 input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
                 input.dispatchEvent(new Event('input'));
+                input.focus();
               })()
             ">${name}</span>`);
           const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
@@ -68,19 +69,39 @@ export class SearchResults {
         } else {
           message = "Geen resultaten.";
         }
-        return `<p id="tommy-results-none" class="hide">${message}</p>`;
+        return `${this.templates.resultsMessage()}<p id="tommy-results-none" class="hide">${message}</p>`;
       }
 
+      const resultsList = this.results ? this.results.map(result => this.templates.resultItem(result)).join('') : [];
+      return `
+        <ul id="tommy-results-list" class="hide scroll">
+          ${this.templates.resultsMessage()}
+          ${resultsList}
+        </ul>
+      `
+    },
+
+    resultsMessage: () => {
+
       let resultsMessage;
-      if (this.parse.dates?.start && this.parse.age_categories && Object.keys(this.parse.age_categories).length) {
+      if (this.parse.dates?.start) {
 
         const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
         const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
 
-        resultsMessage = `Gezocht op ${startFormatted} t/m ${endFormatted} voor `;
-        resultsMessage += Object.keys(this.parse.age_categories).map((key) => {
-          return this.parse.age_categories[key] + "× " + this.options.age_categories[key].toLowerCase();
-        }).join(", ");
+        
+        if (this.tags.accommodation_groups) {
+          resultsMessage = this.parse.accommodation_groups.map(group => this.options.accommodation_groups[group]).join(" of ");
+        } else {
+          resultsMessage = "Zoeken";
+        }
+
+        resultsMessage += ` van ${startFormatted} t/m ${endFormatted}`;
+        if (this.parse.age_categories && Object.keys(this.parse.age_categories).length) {
+          resultsMessage += Object.keys(this.parse.age_categories).map((key) => {
+            return " voor " + this.parse.age_categories[key] + "× " + this.options.age_categories[key].toLowerCase();
+          }).join(", ");
+        }
 
         resultsMessage += "."
         if (!this.tags.accommodation_groups) {
@@ -90,6 +111,7 @@ export class SearchResults {
                   const input = document.getElementById('tommy-search-input');
                   input.value = (input.value.trim() || '') + (input.value ? ', ' : '') + '${name.toLowerCase()}';
                   input.dispatchEvent(new Event('input'));
+                  input.focus();
                 })()
               ">${name}</span>`);
           resultsMessage += accommodationOptions.length > 2
@@ -99,13 +121,8 @@ export class SearchResults {
 
       }
 
-      const resultsList = this.results ? this.results.map(result => this.templates.resultItem(result)).join('') : [];
-      return `
-        <ul id="tommy-results-list" class="hide scroll">
-          ${resultsMessage ? `<li id="tommy-results-message"><p>${resultsMessage}</p></li>` : ""}
-          ${resultsList}
-        </ul>
-      `
+      return resultsMessage ? `<div id="tommy-results-message"><p>${resultsMessage}</p></div>` : ""
+
     },
     
     resultItem: (result) => `
@@ -166,13 +183,13 @@ export class SearchResults {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M17 3v-2c0-.552.447-1 1-1s1 .448 1 1v2c0 .552-.447 1-1 1s-1-.448-1-1zm-12 1c.553 0 1-.448 1-1v-2c0-.552-.447-1-1-1-.553 0-1 .448-1 1v2c0 .552.447 1 1 1zm13 13v-3h-1v4h3v-1h-2zm-5 .5c0 2.481 2.019 4.5 4.5 4.5s4.5-2.019 4.5-4.5-2.019-4.5-4.5-4.5-4.5 2.019-4.5 4.5zm11 0c0 3.59-2.91 6.5-6.5 6.5s-6.5-2.91-6.5-6.5 2.91-6.5 6.5-6.5 6.5 2.91 6.5 6.5zm-14.237 3.5h-7.763v-13h19v1.763c.727.33 1.399.757 2 1.268v-9.031h-3v1c0 1.316-1.278 2.339-2.658 1.894-.831-.268-1.342-1.111-1.342-1.984v-.91h-9v1c0 1.316-1.278 2.339-2.658 1.894-.831-.268-1.342-1.111-1.342-1.984v-.91h-3v21h11.031c-.511-.601-.938-1.273-1.268-2z"/></svg>
           <span>Verblijfsdata</span>
         </span>
-        <span id="tommy-results-tags-age_categories">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z"/></svg>
-          <span>Samenstelling</span>
-        </span>
         <span id="tommy-results-tags-accommodation_groups">
           <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M13 23h-10l-.002-10.016 8.974-7.989 9.011 7.989.017 10.016h-3v-7h-5v7zm-6-7h-2v3h2v-3zm4 0h-2v3h2v-3zm1-15l11.981 10.632-1.328 1.493-10.672-9.481-10.672 9.481-1.328-1.493 12.019-10.632z"/></svg>
           <span>Accommodatietype</span>
+        </span>
+        <span id="tommy-results-tags-age_categories">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z"/></svg>
+          <span>Samenstelling</span>
         </span>
       </div>
     `,
@@ -283,10 +300,13 @@ export class SearchResults {
       if (tempDiv1.firstElementChild.innerHTML === tempDiv2.firstElementChild.innerHTML) return;
 
       // pretty animation
+      const resultsMessage = document.getElementById("tommy-results-message");
       resultsList.classList.add("hide");
       resultsList.parentElement.classList.add("hide");
+      if (resultsMessage) resultsMessage.classList.add("hide");
       setTimeout(() => {
         resultsList.outerHTML = newResultsList;
+        if (resultsMessage) resultsMessage.remove();
         setTimeout(() => {
           
           let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");

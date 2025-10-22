@@ -35,7 +35,7 @@ class SearchWidget {
       placeholder: this.options.placeholder || 'Search...',
       minQueryLength: this.options.minQueryLength || 3,
       debounceDelay: 750,
-      onSearch: async (query) => await this.handleSearch(query),
+      onSearch: async (query, parse) => await this.handleSearch(query, parse),
       onFocus: () => this.resultsComponent.show(),
     });
 
@@ -63,11 +63,11 @@ class SearchWidget {
     document.getElementById("tommy-widget-container").innerHTML = this.element.innerHTML;
   }
 
-  async handleSearch(query) {
+  async handleSearch(query, parse) {
    
     this.resultsComponent.clearError();
 
-    if (!query || query.length < 5) {
+    if (!query || query.length < 4) {
       this.state.results = [];
       this.resultsComponent.setLoading(false);
       this.resultsComponent.updateResults([], {});
@@ -77,10 +77,11 @@ class SearchWidget {
     this.resultsComponent.setLoading(true);
 
     try {
-      const [results, parse] = await this.searchService.search(query);
+      const [results, newParse] = await this.searchService.search(query, parse);
       
       this.state.results = results || [];
-      this.resultsComponent.updateResults(results, parse);
+      this.resultsComponent.updateResults(results, newParse);
+      this.searchInput.updateParse(newParse);
       
     } catch (error) {
       if (error.status === 400) {
@@ -131,7 +132,7 @@ class SearchWidget {
 document.addEventListener('DOMContentLoaded', () => {
   const widgetContainerElement = document.getElementById("tommy-widget-container");
   new SearchWidget(widgetContainerElement, {
-    placeholder: "Je gewenste verblijfsdata...",
+    placeholder: "Typ hier...",
     minQueryLength: 3,
     searchConfig: {
       apiUrl: "/api/v1/widget/219b2fc6-d2e0-42e9-a670-848124341c0f/search" ,
