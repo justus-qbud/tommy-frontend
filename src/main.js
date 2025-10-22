@@ -129,12 +129,23 @@ class SearchWidget {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initWidget() {
   const widgetContainerElement = document.getElementById("tommy-zb");
-  const apiUrl = widgetContainerElement.getAttribute("data-api-url") || "/api/v1";
+  
+  if (!widgetContainerElement) {
+    console.error('Tommy Widget: Container element #tommy-zb not found');
+    return;
+  }
+  
   new SearchWidget(widgetContainerElement, {
-    apiUrl: apiUrl,
+    apiUrl: `${API_BASE_URL}/api/v1`,
     placeholder: "Typ hier...",
     minQueryLength: 3,
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWidget);
+} else {
+  initWidget();
+}
