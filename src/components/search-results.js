@@ -104,7 +104,7 @@ export class SearchResults {
         }
 
         resultsMessage += "."
-        if (!this.tags.accommodation_groups && !this.tags.age_categories) {
+        if (!this.tags.accommodation_groups && this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)
               .map(([id, name]) => `<span class="clickable" onclick="
                 (function() {
