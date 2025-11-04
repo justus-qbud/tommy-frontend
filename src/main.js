@@ -139,7 +139,7 @@ function initWidget() {
   
   new SearchWidget(widgetContainerElement, {
     apiUrl: ["localhost", "tommy-zb.qbud.ai"].includes(window.location.hostname) ? `/api/v1` : "https://tommy-zb.qbud.ai/api/v1",
-    placeholder: "Typ hier...",
+    placeholder: "Typ hier uw periode, accommodatie en aantal personen",
     minQueryLength: 3,
   });
 }

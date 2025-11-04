@@ -45,7 +45,7 @@ export class SearchResults {
             "Voer <span>verblijfsdata</span> in de toekomst in." : 
             (document.getElementById("tommy-search-input")?.value.length >= 4 && !this.tags.accommodation_groups && !this.tags.age_categories ?
               "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
-              "Typ hierboven: je gewenste <span>verblijfsdata</span>."
+              "Typ in de zoekbalk de gewenste <span>verblijfsperiode</span>, <span>soort accommodatie</span> en het <span>aantal personen</span>."
             )
           );
         } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
