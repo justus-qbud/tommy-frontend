@@ -143,12 +143,30 @@ class SearchInput {
       delete parse["error"];
     }
 
+    // Normalize keys: remove hyphenated versions if underscore versions exist
+    const normalizedParse = {...parse};
+    if (normalizedParse.accommodation_groups && normalizedParse['accommodation-groups']) {
+      delete normalizedParse['accommodation-groups'];
+    }
+    if (normalizedParse.age_categories && normalizedParse['age-categories']) {
+      delete normalizedParse['age-categories'];
+    }
+
     if (this.state.parse) {
       let newParse = JSON.parse(this.state.parse);
-      newParse = {...newParse, ...parse};
+      
+      // Remove hyphenated versions from existing parse
+      if (newParse['accommodation-groups']) {
+        delete newParse['accommodation-groups'];
+      }
+      if (newParse['age-categories']) {
+        delete newParse['age-categories'];
+      }
+      
+      newParse = {...newParse, ...normalizedParse};
       this.state.parse = JSON.stringify(newParse);
     } else {
-      this.state.parse = JSON.stringify(parse);
+      this.state.parse = JSON.stringify(normalizedParse);
     }
   }
 
@@ -179,6 +197,16 @@ class SearchInput {
   destroy() {
     this.container.innerHTML = '';
   }
+
+  reset() {
+    this.state.query = '';
+    this.state.lastQuery = '';
+    this.state.parse = null;
+    this.element.value = '';
+    this.element.classList.remove("not-empty");
+    this.element.parentElement.parentElement.classList.remove("ready");
+  }
+
 }
 
 export { SearchInput };

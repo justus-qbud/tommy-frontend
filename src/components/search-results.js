@@ -1,7 +1,7 @@
 import { getLocalStorage, setLocalStorage } from "../utils";
 
 export class SearchResults {
-  constructor(container, apiUrl) {
+  constructor(container, apiUrl, onReset) {
     
     this.container = container;
     this.results = [];
@@ -16,6 +16,7 @@ export class SearchResults {
     this.error = null;
     this.loadingTimeout = null;
     this.apiUrl = apiUrl;
+    this.onReset = onReset;
 
     this.options = [];
     this.getOptions();
@@ -197,21 +198,34 @@ export class SearchResults {
 
     resultsButtons: () => `
       <div id="tommy-results-buttons">
-        <div id="tommy-results-sort">
-          <svg id="tommy-results-sort-show" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
-          <ul>
-            <li id="tommy-results-sort-default">Standaard</li>
-            <li id="tommy-results-sort-price-increasing">Prijs oplopend</li>
-            <li id="tommy-results-sort-price-decreasing">Prijs aflopend</li>
-          </ul>
-        </div>
-        <div id="tommy-results-view" ${!this.vertical ? 'class="horizontal"' : ''}>
-          <svg id="tommy-results-view-ver" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.5 7.583v8.334l.216-.221c.147-.149.341-.223.534-.223.528 0 .75.459.75.75 0 .19-.071.38-.216.526l-1.496 1.528c-.14.142-.332.223-.531.223-.2 0-.392-.079-.533-.22l-1.528-1.527c-.146-.147-.219-.339-.219-.531 0-.495.435-.782.82-.746.168.015.331.087.46.216l.243.243v-8.37l-.243.243c-.129.129-.292.201-.46.216-.385.036-.82-.251-.82-.746 0-.192.073-.384.219-.531l1.528-1.527c.141-.141.333-.22.533-.22.199 0 .391.081.531.223l1.496 1.528c.145.146.216.336.216.526 0 .291-.222.75-.75.75-.193 0-.387-.074-.534-.223zm-4.5 10.167c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75z"/></svg>
-          <svg id="tommy-results-view-hor" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m2 17.75c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm5.526-8.828s.501.505 2.254 2.259c.147.147.22.339.22.53 0 .192-.073.384-.22.531-1.752 1.753-2.254 2.258-2.254 2.258-.145.145-.335.217-.526.217-.192-.001-.384-.074-.53-.221-.293-.293-.295-.766-.004-1.057l.977-.978h-4.693c-.414 0-.75-.336-.75-.75 0-.413.336-.75.75-.75h4.693l-.978-.978c-.289-.289-.287-.762.006-1.055.147-.146.339-.22.53-.221s.38.071.525.215zm3.474 4.828c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm0-4c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-4c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75z"/></svg>
-        </div>
+        ${Object.keys(this.parse).length > 0 ?
+          `<div id="tommy-results-reset">
+            <span>Opnieuw</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M17.573 1.848c.083.699-.476 1.152-1.182 1.152h-8.774c-.704 0-1.266-.452-1.182-1.156-1.329.281-4.435 1.159-4.435 2.516 0 .303.103.7.235 1.361 3.175 2.953 15.758 3.088 19.476.244.159-.824.289-1.278.289-1.611 0-1.333-3.091-2.223-4.427-2.506zm3.113 6.897c-.868 4.587-2.184 10.54-2.709 13.287-1.079 1.312-3.545 1.968-6.013 1.968s-4.935-.656-6.013-1.968c-.529-2.884-1.834-8.868-2.684-13.414.679.274 1.408.492 2.149.67 0 0 2.132 10.441 2.382 11.747.722.514 2.237.965 4.166.965 1.933 0 3.452-.454 4.17-.969.224-1.131 2.411-11.661 2.411-11.661.733-.165 1.46-.367 2.141-.625zm-13.069-6.763c.922 0 1.669-1.08 1.669-1.982h5.437c0 .902.747 1.982 1.668 1.982h-8.774z"/></svg>
+          </div>` :
+          ''
+        }
+        ${this.results?.length > 0 ?
+          `
+          <div id="tommy-results-sort">
+            <svg id="tommy-results-sort-show" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 3.202l3.839 4.798h-7.678l3.839-4.798zm0-3.202l-8 10h16l-8-10zm3.839 16l-3.839 4.798-3.839-4.798h7.678zm4.161-2h-16l8 10 8-10z"/></svg>
+            <span>Sorteren</span>
+            <ul>
+              <li id="tommy-results-sort-default">Standaard</li>
+              <li id="tommy-results-sort-price-increasing">Prijs oplopend</li>
+              <li id="tommy-results-sort-price-decreasing">Prijs aflopend</li>
+            </ul>
+          </div>
+          <div id="tommy-results-view" ${!this.vertical ? 'class="horizontal"' : ''}>
+            <svg id="tommy-results-view-ver" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.5 7.583v8.334l.216-.221c.147-.149.341-.223.534-.223.528 0 .75.459.75.75 0 .19-.071.38-.216.526l-1.496 1.528c-.14.142-.332.223-.531.223-.2 0-.392-.079-.533-.22l-1.528-1.527c-.146-.147-.219-.339-.219-.531 0-.495.435-.782.82-.746.168.015.331.087.46.216l.243.243v-8.37l-.243.243c-.129.129-.292.201-.46.216-.385.036-.82-.251-.82-.746 0-.192.073-.384.219-.531l1.528-1.527c.141-.141.333-.22.533-.22.199 0 .391.081.531.223l1.496 1.528c.145.146.216.336.216.526 0 .291-.222.75-.75.75-.193 0-.387-.074-.534-.223zm-4.5 10.167c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75zm0-4c0-.414-.336-.75-.75-.75h-12.5c-.414 0-.75.336-.75.75s.336.75.75.75h12.5c.414 0 .75-.336.75-.75z"/></svg>
+            <svg id="tommy-results-view-hor" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m2 17.75c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm5.526-8.828s.501.505 2.254 2.259c.147.147.22.339.22.53 0 .192-.073.384-.22.531-1.752 1.753-2.254 2.258-2.254 2.258-.145.145-.335.217-.526.217-.192-.001-.384-.074-.53-.221-.293-.293-.295-.766-.004-1.057l.977-.978h-4.693c-.414 0-.75-.336-.75-.75 0-.413.336-.75.75-.75h4.693l-.978-.978c-.289-.289-.287-.762.006-1.055.147-.146.339-.22.53-.221s.38.071.525.215zm3.474 4.828c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm0-4c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-4c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75z"/></svg>
+            <span>Weergave</span>
+          </div>
+          ` :
+          ''
+        }
       </div>
     `
-
   };
 
   getOptions() {
@@ -298,27 +312,31 @@ export class SearchResults {
       const tempDiv2 = document.createElement('div');
       tempDiv2.innerHTML = resultsList.outerHTML;
 
-      if (tempDiv1.firstElementChild.innerHTML === tempDiv2.firstElementChild.innerHTML) return;
+      if (tempDiv1.firstElementChild.innerHTML !== tempDiv2.firstElementChild.innerHTML) {
 
-      // pretty animation
-      const resultsMessage = document.getElementById("tommy-results-message");
-      resultsList.classList.add("hide");
-      resultsList.parentElement.classList.add("hide");
-      if (resultsMessage) resultsMessage.classList.add("hide");
-      setTimeout(() => {
-        resultsList.outerHTML = newResultsList;
-        if (resultsMessage) resultsMessage.remove();
+        // pretty animation
+        const resultsMessage = document.getElementById("tommy-results-message");
+        resultsList.classList.add("hide");
+        resultsList.parentElement.classList.add("hide");
+        if (resultsMessage) resultsMessage.classList.add("hide");
         setTimeout(() => {
-          
-          let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
-          newResultsList.classList.remove("hide");
-          newResultsList.parentElement.classList.remove("hide");
+          resultsList.outerHTML = newResultsList;
+          if (resultsMessage) resultsMessage.remove();
+          setTimeout(() => {
+            
+            let newResultsList = document.getElementById("tommy-results-list") || document.getElementById("tommy-results-none");
+            newResultsList.classList.remove("hide");
+            newResultsList.parentElement.classList.remove("hide");
 
-          this.setupScrollDetection();
+            this.setupScrollDetection();
 
-        }, 100);
-      }, 250);
+          }, 100);
+        }, 250);
+
+      }
+
     }
+
 
     // update result count
     const resultsCountNumber = document.getElementById("tommy-results-count-number");
@@ -337,6 +355,13 @@ export class SearchResults {
       this.container.classList.add("no-results");
     }
 
+    // update results buttons
+    const resultsButtons = document.getElementById("tommy-results-buttons");
+    if (resultsButtons) {
+      resultsButtons.outerHTML = this.templates.resultsButtons();
+    }
+    this.bindEvents();
+
     this.loading = false;
   }
 
@@ -350,48 +375,64 @@ export class SearchResults {
 
   bindEvents() {
 
-    document.getElementById("tommy-results-view-hor").addEventListener("click", () => {
-      this.vertical = false;
-      const resultsList = document.getElementById("tommy-results-list");
-      resultsList?.classList.add("hide");
-      document.getElementById("tommy-results-view").classList.add("horizontal");
-      setTimeout(() => {
-        document.getElementById("tommy-results-list-wrapper")?.classList.add("horizontal");
-        resultsList?.classList.remove("hide");
-        resultsList?.classList.add("horizontal");
-      }, 250);
-    });
+    if (this.results.length) {
 
-    document.getElementById("tommy-results-view-ver").addEventListener("click", () => {
-      this.vertical = true;
-      const resultsList = document.getElementById("tommy-results-list");
-      resultsList?.classList.add("hide")
-      document.getElementById("tommy-results-view").classList.remove("horizontal");
-      setTimeout(() => {
-        document.getElementById("tommy-results-list-wrapper")?.classList.remove("horizontal");
-        resultsList?.classList.remove("hide");
-        resultsList?.classList.remove("horizontal");
-      }, 250);
-    });
+      document.getElementById("tommy-results-view-hor").addEventListener("click", () => {
+        this.vertical = false;
+        const resultsList = document.getElementById("tommy-results-list");
+        resultsList?.classList.add("hide");
+        document.getElementById("tommy-results-view").classList.add("horizontal");
+        setTimeout(() => {
+          document.getElementById("tommy-results-list-wrapper")?.classList.add("horizontal");
+          resultsList?.classList.remove("hide");
+          resultsList?.classList.add("horizontal");
+        }, 250);
+      });
 
-    document.getElementById("tommy-results-sort-show").addEventListener("click", () => {
-      document.getElementById("tommy-results-sort").classList.toggle("show");
-    });
+      document.getElementById("tommy-results-view-ver").addEventListener("click", () => {
+        this.vertical = true;
+        const resultsList = document.getElementById("tommy-results-list");
+        resultsList?.classList.add("hide")
+        document.getElementById("tommy-results-view").classList.remove("horizontal");
+        setTimeout(() => {
+          document.getElementById("tommy-results-list-wrapper")?.classList.remove("horizontal");
+          resultsList?.classList.remove("hide");
+          resultsList?.classList.remove("horizontal");
+        }, 250);
+      });
 
-    document.getElementById("tommy-results-sort-default").addEventListener("click", () => {
-      this.sortResults('default');
-      document.getElementById("tommy-results-sort").classList.remove("show");
-    });
+      document.getElementById("tommy-results-sort-show").addEventListener("click", () => {
+        document.getElementById("tommy-results-sort").classList.toggle("show");
+      });
 
-    document.getElementById("tommy-results-sort-price-increasing").addEventListener("click", () => {
-      this.sortResults('price-asc');
-      document.getElementById("tommy-results-sort").classList.remove("show");
-    });
+      document.getElementById("tommy-results-sort-default").addEventListener("click", () => {
+        this.sortResults('default');
+        document.getElementById("tommy-results-sort").classList.remove("show");
+      });
 
-    document.getElementById("tommy-results-sort-price-decreasing").addEventListener("click", () => {
-      this.sortResults('price-desc');
-      document.getElementById("tommy-results-sort").classList.remove("show");
-    });
+      document.getElementById("tommy-results-sort-price-increasing").addEventListener("click", () => {
+        this.sortResults('price-asc');
+        document.getElementById("tommy-results-sort").classList.remove("show");
+      });
+
+      document.getElementById("tommy-results-sort-price-decreasing").addEventListener("click", () => {
+        this.sortResults('price-desc');
+        document.getElementById("tommy-results-sort").classList.remove("show");
+      });
+
+    }
+
+    if (Object.keys(this.parse).length) {
+
+      // allow resetting
+      document.getElementById("tommy-results-reset").addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (this.onReset) {
+          this.onReset();
+        }
+      });
+
+    }
 
     this.setupScrollDetection();
 
@@ -497,6 +538,17 @@ export class SearchResults {
 
   clearError() {
     this.error = null;
+  }
+
+  reset() {
+    this.results = [];
+    this.tags = {
+      dates: false,
+      age_categories: false,
+      accommodation_groups: false,
+    };
+    this.parse = {};
+    this.updateResults([], {});
   }
 
 }

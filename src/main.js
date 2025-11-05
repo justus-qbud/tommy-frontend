@@ -26,7 +26,7 @@ class SearchWidget {
 
     // Initialize results component
     const resultsContainer = this.element.querySelector('#tommy-results-container');
-    this.resultsComponent = new SearchResults(resultsContainer, "/api/v1");
+    this.resultsComponent = new SearchResults(resultsContainer, "/api/v1", () => this.handleReset());
     this.resultsComponent.render();
 
     // Initialize search input component
@@ -127,6 +127,14 @@ class SearchWidget {
       this.resultsComponent.destroy();
     }
   }
+
+  handleReset() {
+    this.searchInput.reset();
+    this.resultsComponent.reset();
+    this.state.results = [];
+    this.searchInput.focus();
+  }
+
 }
 
 function initWidget() {
@@ -139,7 +147,7 @@ function initWidget() {
   
   new SearchWidget(widgetContainerElement, {
     apiUrl: ["localhost", "tommy-zb.qbud.ai"].includes(window.location.hostname) ? `/api/v1` : "https://tommy-zb.qbud.ai/api/v1",
-    placeholder: "Typ hier uw periode, accommodatie en aantal personen",
+    placeholder: "Typ uw verblijfsperiode, accommodatie en aantal personen",
     minQueryLength: 3,
   });
 }
