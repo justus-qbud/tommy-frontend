@@ -354,6 +354,7 @@
                             background: var(--lightest-background);
                             box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.04);
                             pointer-events: none;
+                            z-index: 9;
                             @include transition(opacity .2s, transform .2s);
                             @include transform(translateY(-3px));
                         }
