@@ -64,10 +64,10 @@ export class SearchResults {
 
           message = `Leuk! We gaan zoeken van <span>${startFormatted}</span> tot <span>${endFormatted}</span>! `;
           message += accommodationOptions.length > 2
-            ? `Typ nu ook: wil je ${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]}?`
-            : `Typ nu ook: wil je ${accommodationOptions.join(' of ')}?`;
+            ? `Typ nu ook in de zoekbalk hoe je wilt verblijven (${accommodationOptions.slice(0, -1).join(', ')} of ${accommodationOptions[accommodationOptions.length - 1]})`
+            : `Typ nu ook in de zoekbalk hoe je wilt verblijven (${accommodationOptions.join(' of ')})`;
         } else if (!this.tags.age_categories) {
-          message = "Bijna gereed! Typ nu ook de <span>samenstelling van je reisgezelschap</span>."
+          message = "Bijna gereed! Typ nu ook in de zoekbalk met <span>hoeveel personen je wilt verblijven</span>."
         } else {
           message = "Geen resultaten.";
         }
@@ -91,7 +91,6 @@ export class SearchResults {
         const startFormatted = new Date(this.parse.dates.start).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
         const endFormatted = new Date(this.parse.dates.end).toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
 
-        
         if (this.tags.accommodation_groups) {
           resultsMessage = this.parse.accommodation_groups.map(group => this.options.accommodation_groups[group]).join(" of ");
         } else {
@@ -123,7 +122,9 @@ export class SearchResults {
 
       }
 
-      return resultsMessage ? `<div id="tommy-results-message"><p>${resultsMessage}</p></div>` : ""
+      let incomplete = !this.tags.accommodation_groups || !this.tags.accommodation_groups || !this.tags.age_categories;
+
+      return resultsMessage ? `<div id="tommy-results-message" ${incomplete ? "class='incomplete'" : ""}><p>${resultsMessage}</p></div>` : ""
 
     },
     
@@ -187,11 +188,11 @@ export class SearchResults {
         </span>
         <span id="tommy-results-tags-accommodation_groups">
           <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M13 23h-10l-.002-10.016 8.974-7.989 9.011 7.989.017 10.016h-3v-7h-5v7zm-6-7h-2v3h2v-3zm4 0h-2v3h2v-3zm1-15l11.981 10.632-1.328 1.493-10.672-9.481-10.672 9.481-1.328-1.493 12.019-10.632z"/></svg>
-          <span>Accommodatietype</span>
+          <span>Accommodatie</span>
         </span>
         <span id="tommy-results-tags-age_categories">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z"/></svg>
-          <span>Samenstelling</span>
+          <span>Aantal personen</span>
         </span>
       </div>
     `,
