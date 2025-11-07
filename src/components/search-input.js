@@ -127,6 +127,7 @@ class SearchInput {
         this.element.value = "";
         this.state.query = "";
       } catch {
+        this.state.lastQuery = "";
         this.element.parentElement.parentElement.classList.add("ready");
       } finally {
         this.element.disabled = false;
