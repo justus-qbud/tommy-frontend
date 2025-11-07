@@ -43,11 +43,18 @@ export class SearchResults {
         if (!this.tags.dates) {
           message = (
             this.parse?.error === "DATES_PAST" ? 
-            "Voer <span>verblijfsdata</span> in de toekomst in." : 
-            (document.getElementById("tommy-search-input")?.value.length >= 4 && !this.tags.accommodation_groups && !this.tags.age_categories ?
-              "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
-              "Typ in de zoekbalk de gewenste <span>verblijfsperiode</span>, <span>soort accommodatie</span> en het <span>aantal personen</span>."
-            )
+              "Voer <span>verblijfsdata</span> in de toekomst in." : 
+              (document.getElementById("tommy-search-input")?.value.length >= 4 && !this.tags.accommodation_groups && !this.tags.age_categories ?
+                "Sorry, ik begrijp het niet helemaal. Typ bijvoorbeeld '1 okt - 7 okt', zodat ik je <span>verblijfsdata</span> begrijp." :
+                `Typ in de zoekbalk de gewenste <span>verblijfsperiode</span>${
+                  !this.tags.accommodation_groups && !this.tags.age_categories 
+                    ? ', <span>soort accommodatie</span> en het <span>aantal personen</span>' 
+                    : (!this.tags.accommodation_groups 
+                      ? (this.tags.age_categories ? ' en het ' : ', ') + '<span>soort accommodatie</span>' 
+                      : (!this.tags.age_categories ? ' en het <span>aantal personen</span>' : '')
+                    )
+                }.`
+              )
           );
         } else if (!this.tags.accommodation_groups && !this.tags.age_categories) {
           let accommodationOptions = Object.entries(this.options.accommodation_groups)

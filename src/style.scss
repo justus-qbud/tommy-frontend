@@ -241,7 +241,7 @@
 
         &.show {
             
-            max-height: min(600px, 100dvh - 110px);
+            max-height: calc(100dvh - 110px);
             padding-top: 8px;
             @include transition(max-height .3s, padding .15s);
 
@@ -637,7 +637,7 @@
 
                 #tommy-results-list {
 
-                    max-height: 500px;
+                    max-height: calc(100dvh - 2em - 210px);
                     border-bottom: 1px solid var(--lighter-border);
                     width: 100%;
                     overflow-y: auto;
