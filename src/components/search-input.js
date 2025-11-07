@@ -13,7 +13,6 @@ class SearchInput {
     
     this.state = {
       query: '',
-      lastQuery: '',
       parse: null
     };
     
@@ -92,6 +91,12 @@ class SearchInput {
     // Notify about query change immediately
     this.options.onQueryChange(trimmedValue);
 
+    const searchBarMessage = document.getElementById("tommy-search-bar-message");
+    if (searchBarMessage) {
+      searchBarMessage.textContent = "Druk op Enter om te zoeken";
+    }
+    this.element.parentElement.parentElement.classList.remove("show-message");
+
     if (trimmedValue.length) {
       this.element.classList.add("not-empty");
       if (trimmedValue.length >= 4) {
@@ -108,13 +113,6 @@ class SearchInput {
 
   async triggerSearch() {
     const query = this.state.query.trim();
-    const normalizedQuery = query.toLowerCase().replace(/[^a-z0-9]/g, '');
-      
-    if (normalizedQuery === this.state.lastQuery) {
-      return;
-    }
-      
-    this.state.lastQuery = normalizedQuery;
 
     if (query.length >= this.options.minQueryLength) {
       this.element.disabled = true;
@@ -127,7 +125,6 @@ class SearchInput {
         this.element.value = "";
         this.state.query = "";
       } catch {
-        this.state.lastQuery = "";
         this.element.parentElement.parentElement.classList.add("ready");
       } finally {
         this.element.disabled = false;
@@ -135,8 +132,13 @@ class SearchInput {
         this.setLoading(false);
       }
     } else {
-      await this.options.onSearch("");
+      const searchBarMessage = document.getElementById("tommy-search-bar-message");
+      if (searchBarMessage) {
+        searchBarMessage.textContent = `Voer ten minste ${this.options.minQueryLength} tekens in.`;
+        searchBarMessage.parentElement.classList.add("show-message");
+      }
     }
+
   }
 
   updateParse(parse) {
@@ -201,7 +203,6 @@ class SearchInput {
 
   reset() {
     this.state.query = '';
-    this.state.lastQuery = '';
     this.state.parse = null;
     this.element.value = '';
     this.element.classList.remove("not-empty");

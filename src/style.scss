@@ -187,7 +187,7 @@
 
         }
 
-        &.ready {
+        &.ready, &.show-message {
 
             padding-bottom: calc(6px + .6em);
 
