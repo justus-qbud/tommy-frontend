@@ -83,7 +83,7 @@ export class SearchResults {
           };
 
           message = `
-            Geen resultaten. Probeer 
+            Ik heb niets kunnen vinden. Probeer 
               <span 
                 id='tommy-results-alternative'
                 onclick="
