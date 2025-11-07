@@ -69,7 +69,27 @@ export class SearchResults {
         } else if (!this.tags.age_categories) {
           message = "Bijna gereed! Typ nu ook in de zoekbalk met <span>hoeveel personen je wilt verblijven</span>."
         } else {
-          message = "Geen resultaten.";
+          const addDays = (dateStr, days) => {
+            const d = new Date(dateStr);
+            d.setDate(d.getDate() + days);
+            return d.toISOString().split('T')[0];
+          };
+
+          message = `
+            Geen resultaten. Probeer 
+              <span 
+                id='tommy-results-alternative'
+                onclick="
+                  (function() {
+                    const input = document.getElementById('tommy-search-input');
+                    input.value = '${addDays(this.parse.dates.start, 7)} - ${addDays(this.parse.dates.end, 7)}';
+                    input.dispatchEvent(new Event('input'));
+                    input.focus();
+                  })()
+                "
+              >een week later</span>
+            .
+          `;
         }
         return `${this.templates.resultsMessage()}<p id="tommy-results-none" class="hide">${message}</p>`;
       }
