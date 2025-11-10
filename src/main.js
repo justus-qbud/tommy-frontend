@@ -36,14 +36,24 @@ class SearchWidget {
       minQueryLength: this.options.minQueryLength || 3,
       debounceDelay: 750,
       onSearch: async (query, parse) => await this.handleSearch(query, parse),
-      onFocus: () => this.resultsComponent.show(),
+      onFocus: () => {
+        this.resultsComponent.show();
+        const searchBarMessage = document.getElementById("tommy-search-bar-message");
+        if (searchBarMessage) searchBarMessage.parentElement.classList.remove("hide");
+      },
     });
 
     document.addEventListener("click", (e) => {
       const widget = document.getElementById("tommy-search-widget")
       if (!widget.contains(e.target)) {
+        
         this.resultsComponent.hide();
         this.searchInput.blur();
+
+        // hide search bar message
+        const searchBarMessage = document.getElementById("tommy-search-bar-message");
+        if (searchBarMessage) searchBarMessage.parentElement.classList.add("hide");
+
       }
     });
 

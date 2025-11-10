@@ -187,7 +187,7 @@
 
         }
 
-        &.ready, &.show-message {
+        &.ready:not(.hide), &.show-message:not(.hide) {
 
             padding-bottom: calc(6px + .6em);
 
@@ -799,10 +799,6 @@
 
                     &.hide {
                         opacity: 0;
-                    }
-
-                    &.incomplete {
-                        
                     }
 
                 }

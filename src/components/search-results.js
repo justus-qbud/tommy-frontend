@@ -91,7 +91,15 @@ export class SearchResults {
                     const input = document.getElementById('tommy-search-input');
                     input.value = '${addDays(this.parse.dates.start, 7)} - ${addDays(this.parse.dates.end, 7)}';
                     input.dispatchEvent(new Event('input'));
-                    input.dispatchEvent(new KeyboardEvent('keypress', {key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true}));
+                    setTimeout(() => {
+                      input.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        code: 'Enter',
+                        keyCode: 13,
+                        which: 13,
+                        bubbles: true
+                      }));
+                    }, 50);
                   })()
                 "
               >een week later</span>.
