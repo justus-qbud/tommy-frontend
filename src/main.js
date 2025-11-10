@@ -26,7 +26,7 @@ class SearchWidget {
 
     // Initialize results component
     const resultsContainer = this.element.querySelector('#tommy-results-container');
-    this.resultsComponent = new SearchResults(resultsContainer, "/api/v1", () => this.handleReset());
+    this.resultsComponent = new SearchResults(resultsContainer, this.options.apiUrl, () => this.handleReset());
     this.resultsComponent.render();
 
     // Initialize search input component

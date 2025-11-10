@@ -79,7 +79,7 @@ export class SearchResults {
           const addDays = (dateStr, days) => {
             const d = new Date(dateStr);
             d.setDate(d.getDate() + days);
-            return d.toISOString().split('T')[0];
+            return d.toLocaleDateString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric'});
           };
 
           message = `
@@ -91,11 +91,11 @@ export class SearchResults {
                     const input = document.getElementById('tommy-search-input');
                     input.value = '${addDays(this.parse.dates.start, 7)} - ${addDays(this.parse.dates.end, 7)}';
                     input.dispatchEvent(new Event('input'));
-                    input.focus();
+                    input.dispatchEvent(new KeyboardEvent('keypress', {key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true}));
+                    setTimeout(());
                   })()
                 "
-              >een week later</span>
-            .
+              >een week later</span>.
           `;
         }
         return `${this.templates.resultsMessage()}<p id="tommy-results-none" class="hide">${message}</p>`;
